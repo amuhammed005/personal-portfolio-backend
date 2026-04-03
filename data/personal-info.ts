@@ -1,5 +1,5 @@
 export const personalInfo = {
-  name: "DamsTech",
+  name: "Adam Muhammed",
   title: "Full Stack Developer & Data Scientist",
   tagline:
     "I build accessible, pixel-perfect digital experiences and extract insights from data.",

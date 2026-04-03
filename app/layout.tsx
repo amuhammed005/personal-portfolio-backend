@@ -15,7 +15,7 @@ const firaCode = Fira_Code({
 })
 
 export const metadata: Metadata = {
-  title: "Adam Muhammed Chen | Full Stack Developer",
+  title: "Adam Muhammed | Full Stack Developer | Data Scientist",
   description:
     "Adam Muhammed is a full stack developer specializing in building exceptional digital experiences. Currently focused on building accessible, human-centered products.",
   keywords: [
@@ -26,13 +26,43 @@ export const metadata: Metadata = {
     "react",
     "next.js",
     "typescript",
+    "machine learning",
+    "data science",
+    "python",
+    "software development",
+    "data-driven",
+    "web development",
+    "programming",
+    "data science",
+    "deep learning",
+    "ui/ux design",
+    "tech enthusiast",
+    "tech blogger",
+    "open source contributor",
+    "software engineer",
+    "data analyst",
+    "machine learning engineer",
+    "ai developer",
+    "software architect",
+    "technology consultant",
+    "full stack developer",
+    "frontend developer",
+    "backend developer",
+    "react developer",
+    "next.js developer",
+    "typescript developer",
+    "python developer",
+    "data scientist",
+    "machine learning engineer",
+    "deep learning specialist",
+    "ui/ux designer",
   ],
   authors: [{ name: "Adam Muhammed" }],
   creator: "Adam Muhammed",
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://alexchen.dev",
+    url: "https://personal-portfolio-backend.versel.app",
     title: "Adam Muhammed | Full Stack Developer",
     description:
       "Adam Muhammed is a full stack developer specializing in building exceptional digital experiences.",
@@ -48,21 +78,21 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       {
-        url: "/icon-light-32x32.png",
+        url: "/briefcase-portfolio-light.png",
         media: "(prefers-color-scheme: light)",
       },
       {
-        url: "/icon-dark-32x32.png",
+        url: "/briefcase-portfolio-dark.png",
         media: "(prefers-color-scheme: dark)",
       },
       {
-        url: "/icon.svg",
+        url: "/briefcase-portfolio.svg",
         type: "image/svg+xml",
       },
     ],
-    apple: "/apple-icon.png",
+    apple: "/apple-part-2.png",
   },
-}
+};
 
 export default function RootLayout({
   children,
