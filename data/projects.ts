@@ -64,22 +64,22 @@ export const projects: Project[] = [
     githubUrl: "https://github.com/damstech/movie-app",
     featured: true,
   },
-  {
-    id: "webdevblog",
-    title: "Web Development Blog Platform",
-    description:
-      "A full-stack blog application built with Next.js, featuring an admin dashboard for content management.",
-    fullDescription:
-      "This project is a full-stack blog platform built using Next.js with both frontend and backend capabilities. It includes an admin dashboard for managing posts, editing content, and controlling application data. The project demonstrates modern full-stack development practices including server-side rendering, API routes, and structured content management. It is currently under development and will showcase advanced Next.js features upon completion.",
-    image: "/images/projects/blog.png",
-    images: ["/images/projects/blog.png"],
-    technologies: ["Next.js", "React", "Node.js", "MongoDB"],
-    category: "Web Development",
-    date: "2026-02-10",
-    liveUrl: "",
-    githubUrl: "https://github.com/damstech/webdevblog",
-    featured: false,
-  },
+  // {
+    // id: "webdevblog",
+    // title: "Web Development Blog Platform",
+    // description:
+      // "A full-stack blog application built with Next.js, featuring an admin dashboard for content management.",
+    // fullDescription:
+      // "This project is a full-stack blog platform built using Next.js with both frontend and backend capabilities. It includes an admin dashboard for managing posts, editing content, and controlling application data. The project demonstrates modern full-stack development practices including server-side rendering, API routes, and structured content management. It is currently under development and will showcase advanced Next.js features upon completion.",
+    // image: "/images/projects/blog.png",
+    // images: ["/images/projects/blog.png"],
+    // technologies: ["Next.js", "React", "Node.js", "MongoDB"],
+    // category: "Web Development",
+    // date: "2026-02-10",
+    // liveUrl: "",
+    // githubUrl: "https://github.com/damstech/webdevblog",
+    // featured: false,
+  // },
 ];
 
 // Data Science & Machine Learning Projects
