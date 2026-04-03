@@ -11,7 +11,7 @@ const PUBLIC_PATHS = ["/damstech-admin-portal/login"]
 const API_PROTECTED_PATHS = ["/api/admin"]
 const API_PUBLIC_PATHS = ["/api/admin/auth/login", "/api/admin/auth/logout"]
 
-export async function middleware(request: NextRequest) {
+export default async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   // Check if path needs protection
@@ -57,3 +57,4 @@ export const config = {
     "/api/admin/:path*",
   ],
 }
+
