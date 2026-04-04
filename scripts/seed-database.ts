@@ -1,9 +1,10 @@
 // This script seeds the MongoDB database with initial data
 // Run with: npx tsx scripts/seed-database.ts
+import dotenv from "dotenv";
+dotenv.config({ path: ".env.local" });
 
 import { MongoClient } from "mongodb"
 import bcrypt from "bcryptjs"
-import "dotenv/config"
 
 const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost:27017"
 
