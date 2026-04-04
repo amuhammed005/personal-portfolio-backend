@@ -1,14 +1,64 @@
 "use client"
 
 import Image from "next/image"
-import { personalInfo } from "@/data/personal-info"
+// import { personalInfo } from "@/data/personal-info"
 import { SectionHeading } from "@/components/ui/section-heading"
 import { Button } from "@/components/ui/button"
 import { Download, ArrowDown } from "lucide-react"
 import { motion } from "framer-motion"
+import { useFetch } from "@/hooks/useFetch"
+import { PersonalInfo } from "@/lib/types"
+import { Skeleton } from "../ui/skeleton"
+import { ErrorState } from "../error-state"
 
 export function AboutSection() {
-  const bioLines = personalInfo.bio.split("\n\n")
+  const { data: personalInfo, loading, error, refetch } = useFetch<PersonalInfo>("/api/about")
+
+  if (loading) {
+    return (
+      <section id="about" className="py-24 md:py-32">
+        <div className="container mx-auto px-6">
+          <div className="max-w-5xl mx-auto">
+            {/* Heading */}
+            <div className="mb-10 text-center lg:text-left">
+              <Skeleton className="h-8 w-40 mx-auto lg:mx-0" />
+            </div>
+
+            {/* Content Grid */}
+            <div className="grid md:grid-cols-5 gap-12 items-start">
+              {/* Left side (text) */}
+              <div className="md:col-span-3 space-y-4">
+                {Array.from({ length: 3 }).map((_, i) => (
+                  <Skeleton key={i} className="h-4 w-full" />
+                ))}
+
+                {/* Buttons */}
+                <div className="flex gap-4 pt-6">
+                  <Skeleton className="h-10 w-40 rounded-md" />
+                  <Skeleton className="h-10 w-36 rounded-md" />
+                </div>
+              </div>
+
+              {/* Right side (image) */}
+              <div className="md:col-span-2 flex justify-center md:justify-end">
+                <Skeleton className="w-64 h-64 md:w-72 md:h-72 rounded-lg" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (error) {
+    return <ErrorState message={error} onRetry={refetch} />;
+  }
+
+  if (!personalInfo) {
+    return <ErrorState message="No personal information found." />;
+  }
+
+  const bioLines = personalInfo?.bio?.split("\n\n")
 
   const scrollToSkills = () => {
     const skillsSection = document.getElementById("skills")

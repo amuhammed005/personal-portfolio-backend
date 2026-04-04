@@ -2,30 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { getSession } from "@/lib/auth"
 import { getDatabase, COLLECTIONS } from "@/lib/mongodb"
 import { personalInfoSchema } from "@/lib/validations"
-import type { PersonalInfo } from "@/lib/types"
-
-export async function GET() {
-  try {
-    const session = await getSession()
-    if (!session) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-    }
-
-    const db = await getDatabase()
-    const personalInfo = await db
-      .collection<PersonalInfo>(COLLECTIONS.PERSONAL_INFO)
-      .findOne({})
-
-    if (!personalInfo) {
-      return NextResponse.json(null)
-    }
-
-    return NextResponse.json({ ...personalInfo, _id: personalInfo._id?.toString() })
-  } catch (error) {
-    console.error("[Personal Info GET Error]", error)
-    return NextResponse.json({ error: "Failed to fetch personal info" }, { status: 500 })
-  }
-}
+// import type { PersonalInfo } from "@/lib/types"
 
 export async function PUT(request: NextRequest) {
   try {

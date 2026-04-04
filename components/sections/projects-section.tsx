@@ -51,7 +51,7 @@ export function ProjectsSection() {
     loading,
     error,
     refetch,
-  } = useFetch<Project[]>("/api/admin/projects");
+  } = useFetch<Project[]>("/api/projects");
 
   // Handle loading state - show spinner while fetching data
   if (loading) return (
