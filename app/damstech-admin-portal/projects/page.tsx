@@ -49,7 +49,7 @@ export default function ProjectsPage() {
 
   const fetchProjects = async () => {
     try {
-      const response = await fetch("/api/admin/projects")
+      const response = await fetch("/api/projects")
       const data = await response.json()
       setProjects(data)
     } catch (error) {

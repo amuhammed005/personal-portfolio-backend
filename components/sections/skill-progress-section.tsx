@@ -2,9 +2,13 @@
 
 import { useEffect, useRef, useState } from "react"
 import { SectionHeading } from "@/components/ui/section-heading"
-import { skillLevels } from "@/data/personal-info"
+// import { skillLevels } from "@/data/personal-info"
 import { cn } from "@/lib/utils"
 import { motion } from "framer-motion"
+import { useFetch } from "@/hooks/useFetch"
+import { SkillLevel } from "@/lib/types"
+import { Skeleton } from "../ui/skeleton"
+import { ErrorState } from "../error-state"
 
 type FilterType = "All" | "Web" | "ML"
 
@@ -86,8 +90,8 @@ function SkillBar({ name, level, delay }: { name: string; level: number; delay: 
           className={cn(
             "h-full rounded-full",
             isMLSkill 
-              ? "bg-gradient-to-r from-chart-4 to-chart-4/70" 
-              : "bg-gradient-to-r from-primary to-primary/70"
+              ? "bg-linear-to-r from-chart-4 to-chart-4/70" 
+              : "bg-linear-to-r from-primary to-primary/70"
           )}
           initial={{ width: 0 }}
           animate={{ width: isVisible ? `${level}%` : 0 }}
@@ -99,9 +103,56 @@ function SkillBar({ name, level, delay }: { name: string; level: number; delay: 
 }
 
 export function SkillProgressSection() {
+  const { data: skillLevels, loading, error, refetch } = useFetch<SkillLevel[]>("/api/skill-levels")
   const [activeFilter, setActiveFilter] = useState<FilterType>("All")
+  
+  if (loading) {
+    return (
+      <section className="py-24 md:py-32">
+        <div className="container mx-auto px-6 max-w-4xl">
+          {/* Heading */}
+          <div className="space-y-4 mb-10 text-center lg:text-left">
+            <Skeleton className="h-8 w-48 mx-auto lg:mx-0" />
+            <Skeleton className="h-4 w-full max-w-md mx-auto lg:mx-0" />
+          </div>
 
-  const filteredSkills = skillLevels.filter((skill) => {
+          {/* Filter buttons */}
+          <div className="flex flex-wrap justify-center lg:justify-start gap-3 mb-10">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <Skeleton key={i} className="h-8 w-28 rounded-full" />
+            ))}
+          </div>
+
+          {/* Skills grid */}
+          <div className="grid md:grid-cols-2 gap-x-12 gap-y-8">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="space-y-3">
+                {/* Skill name + percentage */}
+                <div className="flex justify-between items-center">
+                  <Skeleton className="h-4 w-24" />
+                  <Skeleton className="h-4 w-10" />
+                </div>
+
+                {/* Progress bar */}
+                <Skeleton className="h-4 lg:h-5 w-full rounded-full" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
+  
+  if (error) {
+    return <ErrorState message={error} onRetry={refetch} />;
+  }
+
+  if (!skillLevels || skillLevels.length === 0) {
+    return <ErrorState message="No skills found." />;
+  }
+
+
+  const filteredSkills = skillLevels?.filter((skill) => {
     if (activeFilter === "All") return true
     if (activeFilter === "Web") return webSkills.includes(skill.name)
     if (activeFilter === "ML") return mlSkills.includes(skill.name)

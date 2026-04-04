@@ -43,7 +43,7 @@ export default function AboutPage() {
 
   const fetchData = async () => {
     try {
-      const response = await fetch("/api/admin/about")
+      const response = await fetch("/api/about")
       const data = await response.json()
       if (data) {
         form.reset(data)
