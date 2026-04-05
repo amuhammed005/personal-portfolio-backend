@@ -74,7 +74,7 @@ export default function ExperiencePage() {
 
   const fetchData = async () => {
     try {
-      const response = await fetch("/api/admin/experience")
+      const response = await fetch("/api/experience")
       const data = await response.json()
       setExperiences(data || [])
     } catch (error) {
