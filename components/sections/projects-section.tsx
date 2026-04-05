@@ -305,7 +305,7 @@ export function ProjectsSection() {
             {otherProjects.map((project, index) => (
               <motion.div
                 key={project.title}
-                className="group bg-card rounded-lg p-6 hover:translate-y-[-8px] transition-all duration-300 border border-border/50 hover:border-primary/50"
+                className="group bg-card rounded-lg p-6 hover:-translate-y-2 transition-all duration-300 border border-border/50 hover:border-primary/50"
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-50px" }}

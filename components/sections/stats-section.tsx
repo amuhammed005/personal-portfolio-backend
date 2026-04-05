@@ -1,8 +1,12 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
-import { stats } from "@/data/personal-info"
+// import { stats } from "@/data/personal-info"
 import { motion, useInView } from "framer-motion"
+import { useFetch } from "@/hooks/useFetch";
+import { Stat } from "@/lib/types";
+import { ErrorState } from "../error-state";
+import { Skeleton } from "../ui/skeleton";
 
 function AnimatedNumber({ value, delay }: { value: string; delay: number }) {
   const [displayValue, setDisplayValue] = useState("0")
@@ -64,6 +68,52 @@ const itemVariants = {
 }
 
 export function StatsSection() {
+  const {data: stats, loading, error, refetch} = useFetch<Stat[]>("/api/stats")
+
+// Handle loading state - show spinner while fetching data
+  if (loading) {
+    return (
+      <section className="py-16">
+        <div className="container mx-auto px-6">
+          <div className="max-w-5xl mx-auto">
+            {/* Heading */}
+            <div className="text-center mb-12 space-y-3">
+              <Skeleton className="h-8 w-48 mx-auto" />
+              <Skeleton className="h-4 w-full max-w-xl mx-auto" />
+            </div>
+
+            {/* Stats grid */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="bg-card border border-border rounded-xl p-6 text-center space-y-4"
+                >
+                  {/* Big number */}
+                  <Skeleton className="h-10 w-20 mx-auto" />
+
+                  {/* Label */}
+                  <Skeleton className="h-4 w-24 mx-auto" />
+
+                  {/* Bottom accent line */}
+                  <Skeleton className="h-1 w-full rounded-full" />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  // Handle error state - show error message with retry option
+  if (error) return <ErrorState message={error} onRetry={refetch} />;
+
+  // Handle empty state - show message when no projects are returned
+  if (!stats || stats.length === 0) {
+    return <ErrorState message="No stats found." />;
+  }
+
   return (
     <section className="py-16">
       <div className="container mx-auto px-6">

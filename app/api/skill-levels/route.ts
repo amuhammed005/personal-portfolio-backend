@@ -13,8 +13,8 @@ export async function GET() {
       .sort({ order: 1 })
       .toArray()
     
-    console.log("Skill levels count from DB:", skillLevels.length) // Log raw data for debugging
-    console.log("Fetched skill levels:", skillLevels[0]) // Log the first skill level for debugging
+    // console.log("Skill levels count from DB:", skillLevels.length) // Log raw data for debugging
+    // console.log("Fetched skill levels:", skillLevels[0]) // Log the first skill level for debugging
 
     return NextResponse.json(
       skillLevels.map((s) => ({ ...s, _id: s._id?.toString()}))

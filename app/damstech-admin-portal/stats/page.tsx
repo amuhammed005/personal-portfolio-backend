@@ -67,7 +67,7 @@ export default function StatsPage() {
 
   const fetchData = async () => {
     try {
-      const response = await fetch("/api/admin/stats")
+      const response = await fetch("/api/stats")
       const data = await response.json()
       setStats(data || [])
     } catch (error) {
