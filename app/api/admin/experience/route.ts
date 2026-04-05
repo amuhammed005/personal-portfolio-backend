@@ -5,29 +5,6 @@ import { getDatabase, COLLECTIONS } from "@/lib/mongodb"
 import { experienceSchema } from "@/lib/validations"
 import type { Experience } from "@/lib/types"
 
-export async function GET() {
-  try {
-    const session = await getSession()
-    if (!session) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-    }
-
-    const db = await getDatabase()
-    const experience = await db
-      .collection<Experience>(COLLECTIONS.EXPERIENCE)
-      .find()
-      .sort({ order: 1, createdAt: -1 })
-      .toArray()
-
-    return NextResponse.json(
-      experience.map((e) => ({ ...e, _id: e._id?.toString() }))
-    )
-  } catch (error) {
-    console.error("[Experience GET Error]", error)
-    return NextResponse.json({ error: "Failed to fetch experience" }, { status: 500 })
-  }
-}
-
 export async function POST(request: NextRequest) {
   try {
     const session = await getSession()
