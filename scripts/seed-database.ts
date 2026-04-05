@@ -376,19 +376,20 @@ async function seedDatabase() {
     
     await db.collection("skill_levels").insertMany(skillLevelsData)
     console.log("Inserted skill levels")
-    
+
     // Create admin user
-    const adminUsername = process.env.ADMIN_USERNAME || "damstech"
+    const adminUsername = process.env.ADMIN_USERNAME || "damstech005";
     const existingAdmin = await db.collection("admins").findOne({ username: adminUsername })
     if (!existingAdmin) {
-      const adminPassword = process.env.ADMIN_INITIAL_PASSWORD || "admin123"
+      const adminPassword =
+        process.env.ADMIN_INITIAL_PASSWORD || "D0a1m3s2t@e0c1h3";
       const hashedPassword = await bcrypt.hash(adminPassword, 12)
       await db.collection("admins").insertOne({
         username: adminUsername,
-        email: process.env.ADMIN_EMAIL || "adammuhamme5000d@damstech.dev",
+        email: process.env.ADMIN_EMAIL || "damstech005@gmail.com",
         password: hashedPassword,
         createdAt: new Date(),
-      })
+      });
       console.log(`Created admin user (username: ${adminUsername}, password: ${adminPassword})`)
     }
     

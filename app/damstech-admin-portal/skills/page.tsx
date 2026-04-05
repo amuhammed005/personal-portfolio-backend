@@ -107,7 +107,7 @@ export default function SkillsPage() {
 
   const fetchData = async () => {
     try {
-      const response = await fetch("/api/admin/skills")
+      const response = await fetch("/api/skills")
       const data = await response.json()
       setSkills(data.skills || [])
       setSkillLevels(data.skillLevels || [])

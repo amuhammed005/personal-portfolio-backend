@@ -10,7 +10,7 @@ export async function GET() {
       .collection<PersonalInfo>(COLLECTIONS.PERSONAL_INFO)
       .findOne({})
 
-    console.log("Personal info from DB:", personalInfo) // Log raw data for debugging
+    // console.log("Personal info from DB:", personalInfo) // Log raw data for debugging
     
     if (!personalInfo) {
       return NextResponse.json(null)
