@@ -101,7 +101,7 @@ export default function SocialLinksPage() {
 
   const fetchData = async () => {
     try {
-      const response = await fetch("/api/admin/social-links")
+      const response = await fetch("/api/social-links")
       const data = await response.json()
       setSocialLinks(data || [])
     } catch (error) {

@@ -1,12 +1,13 @@
-import { NextResponse } from "next/server"
 // import { ObjectId } from "mongodb"
 // import { getSession } from "@/lib/auth"
-import { getDatabase, COLLECTIONS } from "@/lib/mongodb"
 // import { experienceSchema } from "@/lib/validations"
+import { NextResponse } from "next/server"
+import { getDatabase, COLLECTIONS } from "@/lib/mongodb"
 import type { Experience } from "@/lib/types"
 
 export async function GET() {
   try {
+
     const db = await getDatabase()
     const experience = await db
       .collection<Experience>(COLLECTIONS.EXPERIENCE)
