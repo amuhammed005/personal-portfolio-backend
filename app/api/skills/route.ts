@@ -1,17 +1,17 @@
 import { NextRequest, NextResponse } from "next/server"
-import { ObjectId } from "mongodb"
+// import { ObjectId } from "mongodb"
 import { getSession } from "@/lib/auth"
 import { getDatabase, COLLECTIONS } from "@/lib/mongodb"
-import { skillSchema, skillLevelSchema } from "@/lib/validations"
+// import { skillSchema, skillLevelSchema } from "@/lib/validations"
 import type { Skill, SkillLevel } from "@/lib/types"
 
 // Get all skills
 export async function GET() {
   try {
-    const session = await getSession()
-    if (!session) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-    }
+    // const session = await getSession()
+    // if (!session) {
+    //   return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    // }
 
     const db = await getDatabase()
     
