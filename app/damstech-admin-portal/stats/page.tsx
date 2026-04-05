@@ -177,7 +177,7 @@ export default function StatsPage() {
                 {stats.map((stat) => (
                   <div
                     key={stat._id}
-                    className="rounded-lg border border-border/50 bg-gradient-to-br from-muted/50 to-background p-4 text-center"
+                    className="rounded-lg border border-border/50 bg-linear-to-br from-muted/50 to-background p-4 text-center"
                   >
                     <div className="text-3xl font-bold text-primary">{stat.value}</div>
                     <div className="text-sm text-muted-foreground">{stat.label}</div>

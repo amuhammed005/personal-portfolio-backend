@@ -1,46 +1,46 @@
-"use client"
+"use client";
 
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react";
 // import { stats } from "@/data/personal-info"
-import { motion, useInView } from "framer-motion"
+import { motion, useInView } from "framer-motion";
 import { useFetch } from "@/hooks/useFetch";
 import { Stat } from "@/lib/types";
 import { ErrorState } from "../error-state";
 import { Skeleton } from "../ui/skeleton";
 
 function AnimatedNumber({ value, delay }: { value: string; delay: number }) {
-  const [displayValue, setDisplayValue] = useState("0")
-  const ref = useRef<HTMLSpanElement>(null)
-  const isInView = useInView(ref, { once: true, margin: "-100px" })
-  
+  const [displayValue, setDisplayValue] = useState("0");
+  const ref = useRef<HTMLSpanElement>(null);
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
+
   useEffect(() => {
-    if (!isInView) return
-    
+    if (!isInView) return;
+
     const timeout = setTimeout(() => {
-      const numericValue = parseInt(value.replace(/\D/g, ""))
-      const suffix = value.replace(/[0-9]/g, "")
-      const duration = 2000
-      const steps = 60
-      const stepDuration = duration / steps
-      let current = 0
-      
+      const numericValue = parseInt(value.replace(/\D/g, ""));
+      const suffix = value.replace(/[0-9]/g, "");
+      const duration = 2000;
+      const steps = 60;
+      const stepDuration = duration / steps;
+      let current = 0;
+
       const timer = setInterval(() => {
-        current += numericValue / steps
+        current += numericValue / steps;
         if (current >= numericValue) {
-          setDisplayValue(numericValue + suffix)
-          clearInterval(timer)
+          setDisplayValue(numericValue + suffix);
+          clearInterval(timer);
         } else {
-          setDisplayValue(Math.floor(current) + suffix)
+          setDisplayValue(Math.floor(current) + suffix);
         }
-      }, stepDuration)
-      
-      return () => clearInterval(timer)
-    }, delay)
-    
-    return () => clearTimeout(timeout)
-  }, [value, isInView, delay])
-  
-  return <span ref={ref}>{displayValue}</span>
+      }, stepDuration);
+
+      return () => clearInterval(timer);
+    }, delay);
+
+    return () => clearTimeout(timeout);
+  }, [value, isInView, delay]);
+
+  return <span ref={ref}>{displayValue}</span>;
 }
 
 const containerVariants = {
@@ -51,7 +51,7 @@ const containerVariants = {
       staggerChildren: 0.15,
     },
   },
-}
+};
 
 const itemVariants = {
   hidden: { opacity: 0, y: 40, scale: 0.9 },
@@ -60,17 +60,22 @@ const itemVariants = {
     y: 0,
     scale: 1,
     transition: {
-      type: "spring",
+      type: "spring" as const,
       stiffness: 100,
       damping: 12,
     },
   },
-}
+};
 
 export function StatsSection() {
-  const {data: stats, loading, error, refetch} = useFetch<Stat[]>("/api/stats")
+  const {
+    data: stats,
+    loading,
+    error,
+    refetch,
+  } = useFetch<Stat[]>("/api/stats");
 
-// Handle loading state - show spinner while fetching data
+  // Handle loading state - show spinner while fetching data
   if (loading) {
     return (
       <section className="py-16">

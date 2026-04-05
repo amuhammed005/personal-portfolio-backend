@@ -243,7 +243,7 @@ export default function SocialLinksPage() {
                   <TableHead>Icon</TableHead>
                   <TableHead>URL</TableHead>
                   <TableHead>Order</TableHead>
-                  <TableHead className="w-[50px]"></TableHead>
+                  <TableHead className="w-12.5"></TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -280,7 +280,7 @@ export default function SocialLinksPage() {
                           rel="noopener noreferrer"
                           className="flex items-center gap-1 text-primary hover:underline"
                         >
-                          <span className="max-w-[200px] truncate">{link.url}</span>
+                          <span className="max-w-50 truncate">{link.url}</span>
                           <ExternalLink className="h-3 w-3" />
                         </a>
                       </TableCell>
