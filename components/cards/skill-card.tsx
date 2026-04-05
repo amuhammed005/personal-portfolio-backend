@@ -178,7 +178,7 @@ export function SkillCard({ skill, isCenter }: SkillCardProps) {
         "flex flex-col items-center justify-center gap-3 px-6 py-4 rounded-xl",
         "bg-card border border-border/50 shadow-sm",
         "hover:border-primary/50 hover:shadow-md hover:scale-105",
-        "transition-all duration-300 min-w-[120px]",
+        "transition-all duration-300 min-w-30",
         isCenter && "scale-110 border-primary/50"
       )}
     >
