@@ -62,7 +62,7 @@ export function SkillsSection() {
             {Array.from({ length: 6 }).map((_, i) => (
               <div
                 key={i}
-                className="bg-card border border-border rounded-xl p-4 space-y-3 w-40 flex-shrink-0"
+                className="bg-card border border-border rounded-xl p-4 space-y-3 w-40 shrink-0"
               >
                 {/* Icon */}
                 <Skeleton className="h-10 w-10 mx-auto rounded-full" />
@@ -87,7 +87,7 @@ export function SkillsSection() {
             {Array.from({ length: 6 }).map((_, i) => (
               <div
                 key={i}
-                className="bg-card border border-border rounded-xl p-4 space-y-3 w-40 flex-shrink-0"
+                className="bg-card border border-border rounded-xl p-4 space-y-3 w-40 shrink-0"
               >
                 {/* Icon */}
                 <Skeleton className="h-10 w-10 mx-auto rounded-full" />
