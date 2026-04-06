@@ -1,11 +1,11 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { AdminShell } from "@/components/admin/admin-shell"
-import { ProjectForm } from "@/components/admin/project-form"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Input } from "@/components/ui/input"
+import { useEffect, useState } from "react";
+import { AdminShell } from "@/components/admin/admin-shell";
+import { ProjectForm } from "@/components/admin/project-form";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -13,13 +13,13 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
+} from "@/components/ui/table";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -29,63 +29,87 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog"
-import { Skeleton } from "@/components/ui/skeleton"
-import { Plus, MoreHorizontal, Pencil, Trash2, Search, ExternalLink, Github } from "lucide-react"
-import type { ProjectInput } from "@/lib/validations"
+} from "@/components/ui/alert-dialog";
+import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Plus,
+  MoreHorizontal,
+  Pencil,
+  Trash2,
+  Search,
+  ExternalLink,
+  Github,
+} from "lucide-react";
+import type { ProjectInput } from "@/lib/validations";
 
 interface Project extends ProjectInput {
-  _id: string
-  createdAt?: string
+  _id: string;
+  createdAt?: string;
 }
 
 export default function ProjectsPage() {
-  const [projects, setProjects] = useState<Project[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [searchQuery, setSearchQuery] = useState("")
-  const [isFormOpen, setIsFormOpen] = useState(false)
-  const [editingProject, setEditingProject] = useState<Project | null>(null)
-  const [deletingProject, setDeletingProject] = useState<Project | null>(null)
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [editingProject, setEditingProject] = useState<Project | null>(null);
+  const [deletingProject, setDeletingProject] = useState<Project | null>(null);
+
+  const [error, setError] = useState<string | null>(null);
 
   const fetchProjects = async () => {
     try {
-      const response = await fetch("/api/projects")
-      const data = await response.json()
-      setProjects(data)
-    } catch (error) {
-      console.error("Failed to fetch projects:", error)
+      const response = await fetch("/api/projects");
+
+      if (!response.ok) throw new Error("Failed to fetch");
+
+      const data = await response.json();
+      setProjects(data);
+    } catch (err) {
+      console.error(err);
+      setError("Failed to load projects");
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
+  };
+
+  if (error) {
+    return <div className="text-red-500">{error}</div>;
   }
 
   useEffect(() => {
-    fetchProjects()
-  }, [])
+    fetchProjects();
+  }, []);
 
   const handleDelete = async () => {
-    if (!deletingProject) return
+    if (!deletingProject) return;
 
     try {
-      const response = await fetch(`/api/admin/projects?id=${deletingProject._id}`, {
-        method: "DELETE",
-      })
+      const response = await fetch(
+        `/api/admin/projects?id=${deletingProject._id}`,
+        {
+          method: "DELETE",
+        },
+      );
 
       if (response.ok) {
-        setProjects(projects.filter((p) => p._id !== deletingProject._id))
+        // setProjects(projects.filter((p) => p._id !== deletingProject._id));
+        setProjects((prev) =>
+          prev.filter((p) => p._id !== deletingProject._id),
+        );
       }
     } catch (error) {
-      console.error("Failed to delete project:", error)
+      console.error("Failed to delete project:", error);
     } finally {
-      setDeletingProject(null)
+      setDeletingProject(null);
     }
-  }
+  };
 
   const filteredProjects = projects.filter(
     (p) =>
       p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      p.category.toLowerCase().includes(searchQuery.toLowerCase())
-  )
+      p.category.toLowerCase().includes(searchQuery.toLowerCase()),
+  );
 
   return (
     <AdminShell title="Projects">
@@ -124,31 +148,54 @@ export default function ProjectsPage() {
               {isLoading ? (
                 Array.from({ length: 5 }).map((_, i) => (
                   <TableRow key={i}>
-                    <TableCell><Skeleton className="h-4 w-32" /></TableCell>
-                    <TableCell><Skeleton className="h-4 w-24" /></TableCell>
-                    <TableCell><Skeleton className="h-4 w-40" /></TableCell>
-                    <TableCell><Skeleton className="h-4 w-16" /></TableCell>
-                    <TableCell><Skeleton className="h-4 w-16" /></TableCell>
-                    <TableCell><Skeleton className="h-4 w-8" /></TableCell>
+                    <TableCell>
+                      <Skeleton className="h-4 w-32" />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton className="h-4 w-24" />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton className="h-4 w-40" />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton className="h-4 w-16" />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton className="h-4 w-16" />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton className="h-4 w-8" />
+                    </TableCell>
                   </TableRow>
                 ))
               ) : filteredProjects.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center text-muted-foreground py-8">
-                    {searchQuery ? "No projects found matching your search." : "No projects yet. Add your first project!"}
+                  <TableCell
+                    colSpan={6}
+                    className="text-center text-muted-foreground py-8"
+                  >
+                    {searchQuery
+                      ? "No projects found matching your search."
+                      : "No projects yet. Add your first project!"}
                   </TableCell>
                 </TableRow>
               ) : (
                 filteredProjects.map((project) => (
                   <TableRow key={project._id}>
-                    <TableCell className="font-medium">{project.title}</TableCell>
+                    <TableCell className="font-medium">
+                      {project.title}
+                    </TableCell>
                     <TableCell>
                       <Badge variant="outline">{project.category}</Badge>
                     </TableCell>
                     <TableCell>
                       <div className="flex flex-wrap gap-1">
                         {project.technologies.slice(0, 3).map((tech) => (
-                          <Badge key={tech} variant="secondary" className="text-xs">
+                          <Badge
+                            key={tech}
+                            variant="secondary"
+                            className="text-xs"
+                          >
                             {tech}
                           </Badge>
                         ))}
@@ -193,15 +240,19 @@ export default function ProjectsPage() {
                     <TableCell>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon" className="h-8 w-8">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8"
+                          >
                             <MoreHorizontal className="h-4 w-4" />
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                           <DropdownMenuItem
                             onClick={() => {
-                              setEditingProject(project)
-                              setIsFormOpen(true)
+                              setEditingProject(project);
+                              setIsFormOpen(true);
                             }}
                           >
                             <Pencil className="mr-2 h-4 w-4" />
@@ -229,20 +280,36 @@ export default function ProjectsPage() {
       <ProjectForm
         open={isFormOpen}
         onOpenChange={(open) => {
-          setIsFormOpen(open)
-          if (!open) setEditingProject(null)
+          setIsFormOpen(open);
+
+          if (!open) {
+            setEditingProject(null);
+          }
         }}
         onSuccess={fetchProjects}
         initialData={editingProject || undefined}
       />
+      {/* <ProjectForm
+          open={isFormOpen}
+          onOpenChange={(open) => {
+            setIsFormOpen(open);
+            if (!open) setEditingProject(null);
+          }}
+          onSuccess={fetchProjects}
+          initialData={editingProject || undefined}
+        /> */}
 
       {/* Delete Confirmation Dialog */}
-      <AlertDialog open={!!deletingProject} onOpenChange={() => setDeletingProject(null)}>
+      <AlertDialog
+        open={!!deletingProject}
+        onOpenChange={() => setDeletingProject(null)}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Delete Project</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete &quot;{deletingProject?.title}&quot;? This action cannot be undone.
+              Are you sure you want to delete &quot;{deletingProject?.title}
+              &quot;? This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -257,5 +324,5 @@ export default function ProjectsPage() {
         </AlertDialogContent>
       </AlertDialog>
     </AdminShell>
-  )
+  );
 }

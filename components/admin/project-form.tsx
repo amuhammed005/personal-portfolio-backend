@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Button } from "@/components/ui/button"
@@ -58,9 +58,36 @@ export function ProjectForm({
   const [isLoading, setIsLoading] = useState(false)
   const isEditing = !!initialData?._id
 
+  // Form with default values and reset on initialData change
   const form = useForm<ProjectInput>({
-    resolver: zodResolver(projectSchema),
-    defaultValues: initialData || {
+  resolver: zodResolver(projectSchema),
+  defaultValues: {
+    id: "",
+    title: "",
+    description: "",
+    fullDescription: "",
+    image: "/images/projects/placeholder.jpg",
+    images: [],
+    technologies: [],
+    category: "Web Development",
+    date: new Date().toISOString().split("T")[0],
+    liveUrl: "",
+    githubUrl: "",
+    featured: false,
+  },
+})
+
+useEffect(() => {
+  if (!open) return;
+
+  if (initialData) {
+    form.reset({
+      ...initialData,
+      technologies: initialData.technologies || [],
+      images: initialData.images || [],
+    });
+  } else {
+    form.reset({
       id: "",
       title: "",
       description: "",
@@ -73,8 +100,9 @@ export function ProjectForm({
       liveUrl: "",
       githubUrl: "",
       featured: false,
-    },
-  })
+    });
+  }
+}, [initialData, open]);
 
   const onSubmit = async (data: ProjectInput) => {
     setIsLoading(true)
