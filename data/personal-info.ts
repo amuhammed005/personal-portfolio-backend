@@ -15,7 +15,7 @@ I am deeply interested in creating systems that incorporate software development
   whatsapp: "+233243323019",
 };
 
-export const skillLevels = [
+export const skillLevel = [
   { name: "JavaScript", level: 80 },
   { name: "React.js", level: 85 },
   { name: "TypeScript", level: 65 },
@@ -26,7 +26,7 @@ export const skillLevels = [
   { name: "Machine Learning", level: 75 },
   { name: "Data Analysis", level: 70 },
   { name: "Deep Learning", level: 40 },
-]
+];
 
 export const socialLinks = [
   {
@@ -57,11 +57,11 @@ export const navLinks = [
   { name: "Experience", href: "#experience" },
   { name: "Projects", href: "#projects" },
   { name: "Contact", href: "#contact" },
-]
+];
 
 export const stats = [
   { value: "05+", label: "Years Experience" },
   { value: "08+", label: "Projects Completed" },
   { value: "05+", label: "Happy Clients" },
   { value: "20+", label: "Tech Skills" },
-]
+];

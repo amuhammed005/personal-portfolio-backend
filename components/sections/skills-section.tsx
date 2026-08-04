@@ -1,13 +1,13 @@
 "use client";
 
 import { useState } from "react";
-// import { webDevSkills, mlSkills } from "@/data/skills"
+import { fallbackSkills } from "@/data/skills";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { SkillCard } from "@/components/cards/skill-card";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { useFetch } from "@/hooks/useFetch";
-import { Skill, SkillLevel } from "@/lib/types";
+import { Skill } from "@/lib/types";
 import { ErrorState } from "../error-state";
 import { Skeleton } from "../ui/skeleton";
 
@@ -15,18 +15,18 @@ type FilterType = "All" | "Web" | "ML";
 
 type SkillsResponse = {
   skills: Skill[];
-  skillLevels: SkillLevel[];
 };
 
 export function SkillsSection() {
-  const { data, error, loading, refetch } =
-    useFetch<SkillsResponse>("/api/skills");
+  const { data, error, loading, refetch } = useFetch<SkillsResponse>(
+    "/api/skills",
+    fallbackSkills,
+  );
 
-  const skills = data?.skills || [];
-
+  const skills = data?.skills ?? fallbackSkills.skills;
   const [activeFilter, setActiveFilter] = useState<FilterType>("All");
 
-  if (loading) {
+  if (loading && data === null) {
     return (
       <section className="py-24 md:py-32 overflow-hidden">
         <div className="container mx-auto px-6 max-w-4xl">
@@ -106,7 +106,7 @@ export function SkillsSection() {
     return <ErrorState message={error} onRetry={refetch} />;
   }
 
-  if (!skills || skills.length === 0) {
+  if (skills.length === 0) {
     return <ErrorState message="No skills found." />;
   }
 

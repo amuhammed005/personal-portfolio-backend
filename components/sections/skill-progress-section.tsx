@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react"
 import { SectionHeading } from "@/components/ui/section-heading"
-// import { skillLevels } from "@/data/personal-info"
+import { skillLevel as fallbackSkillLevels } from "@/data/personal-info"
 import { cn } from "@/lib/utils"
 import { motion } from "framer-motion"
 import { useFetch } from "@/hooks/useFetch"
@@ -103,10 +103,13 @@ function SkillBar({ name, level, delay }: { name: string; level: number; delay: 
 }
 
 export function SkillProgressSection() {
-  const { data: skillLevels, loading, error, refetch } = useFetch<SkillLevel[]>("/api/skill-levels")
+  const { data: skillLevels, loading, error, refetch } = useFetch<SkillLevel[]>(
+    "/api/skill-levels",
+    fallbackSkillLevels,
+  )
   const [activeFilter, setActiveFilter] = useState<FilterType>("All")
   
-  if (loading) {
+  if (loading && skillLevels === null) {
     return (
       <section className="py-24 md:py-32">
         <div className="container mx-auto px-6 max-w-4xl">

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-// import { stats } from "@/data/personal-info"
+import { stats as fallbackStats } from "@/data/personal-info";
 import { motion, useInView } from "framer-motion";
 import { useFetch } from "@/hooks/useFetch";
 import { Stat } from "@/lib/types";
@@ -73,7 +73,7 @@ export function StatsSection() {
     loading,
     error,
     refetch,
-  } = useFetch<Stat[]>("/api/stats");
+  } = useFetch<Stat[]>("/api/stats", fallbackStats);
 
   // Handle loading state - show spinner while fetching data
   if (loading) {
