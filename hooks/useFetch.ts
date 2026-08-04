@@ -8,9 +8,9 @@ import { useEffect, useState } from "react";
  * @param url - API endpoint to fetch data from
  * @returns Object containing data, loading state, error message, and refetch function
  */
-export function useFetch<T>(url: string) {
+export function useFetch<T>(url: string, fallbackData?: T) {
   // State to store the fetched data
-  const [data, setData] = useState<T | null>(null);
+  const [data, setData] = useState<T | null>(fallbackData ?? null);
 
   // Loading state - true while fetch is in progress
   const [loading, setLoading] = useState(true);
@@ -39,6 +39,12 @@ export function useFetch<T>(url: string) {
 
       // Check if response was successful
       if (!res.ok) {
+        // A fallback makes a failed API response non-fatal for the UI.
+        if (fallbackData !== undefined) {
+          setData(fallbackData);
+          return;
+        }
+
         // ✅ Improved: Try to get error message from response body
         let errorMessage = `Error ${res.status}: Failed to fetch`;
         try {
@@ -66,14 +72,17 @@ export function useFetch<T>(url: string) {
       // Update data state with fetched result
       setData(result);
     } catch (err: any) {
-      // Handle any errors during fetch or parsing
-      const errorMessage = err.message || "Something went wrong";
+      if (fallbackData !== undefined) {
+        // Network and parsing errors use the same quiet fallback path.
+        setData(fallbackData);
+        setError(null);
+        return;
+      }
 
-      // ✅ Added: Log error for debugging
+      // Handle failures only when the caller did not provide a fallback.
+      const errorMessage = err instanceof Error ? err.message : "Something went wrong";
       console.error(`[useFetch] Error fetching from ${url}:`, err);
-
       setError(errorMessage);
-      // ✅ Added: Set data to null on error to prevent stale data
       setData(null);
     } finally {
       // Always set loading to false when fetch completes (success or error)

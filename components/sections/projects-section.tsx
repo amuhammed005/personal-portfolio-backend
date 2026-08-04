@@ -6,7 +6,7 @@ import Link from "next/link";
 import { Spinner } from "../ui/spinner";
 import { Skeleton } from "../ui/skeleton";
 // Commented out: Static data import no longer needed since we're fetching from API
-// import { allProjects } from "@/data/projects"
+import { allProjects as fallbackProjects } from "@/data/projects";
 
 import { SectionHeading } from "@/components/ui/section-heading";
 import { Button } from "@/components/ui/button";
@@ -51,24 +51,25 @@ export function ProjectsSection() {
     loading,
     error,
     refetch,
-  } = useFetch<Project[]>("/api/projects");
+  } = useFetch<Project[]>("/api/projects", fallbackProjects);
 
   // Handle loading state - show spinner while fetching data
-  if (loading) return (
-    // <div className="flex flex-col items-center justify-center py-16 text-center">
-    //   <Spinner />
-    // </div>
-    <section className="py-24 md:py-32">
-      <div className="container mx-auto px-6">
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {/* ✅ Skeleton placeholders */}
-          {Array.from({ length: 6 }).map((_, i) => (
-            <Skeleton key={i} className="h-64 w-full rounded-lg" />
-          ))}
+  if (loading)
+    return (
+      // <div className="flex flex-col items-center justify-center py-16 text-center">
+      //   <Spinner />
+      // </div>
+      <section className="py-24 md:py-32">
+        <div className="container mx-auto px-6">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {/* ✅ Skeleton placeholders */}
+            {Array.from({ length: 6 }).map((_, i) => (
+              <Skeleton key={i} className="h-64 w-full rounded-lg" />
+            ))}
+          </div>
         </div>
-      </div>
-    </section>
-  ); 
+      </section>
+    );
 
   // Handle error state - show error message with retry option
   if (error) return <ErrorState message={error} onRetry={refetch} />;
