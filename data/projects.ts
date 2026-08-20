@@ -1,18 +1,23 @@
-export type ProjectCategory = "Web Development" | "Data Science" | "Developer Tools" | "Education" | "Fun & Games"
+export type ProjectCategory =
+  | "Web Development"
+  | "Data Science"
+  | "Developer Tools"
+  | "Education"
+  | "Fun & Games";
 
 export interface Project {
-  id: string
-  title: string
-  description: string
-  fullDescription?: string
-  image: string
-  images?: string[]
-  technologies: string[]
-  category: ProjectCategory
-  date: string
-  liveUrl?: string
-  githubUrl?: string
-  featured: boolean
+  id: string;
+  title: string;
+  description: string;
+  fullDescription?: string;
+  image: string;
+  images?: string[];
+  technologies: string[];
+  category: ProjectCategory;
+  date: string;
+  liveUrl?: string;
+  githubUrl?: string;
+  featured: boolean;
 }
 
 export const projects: Project[] = [
@@ -29,7 +34,7 @@ export const projects: Project[] = [
     category: "Web Development",
     date: "2025-03-10",
     liveUrl: "https://book-store-app-mern-umber.vercel.app/",
-    githubUrl: "https://github.com/damstech/bookstore-app",
+    githubUrl: "https://github.com/amuhammed005/book-store-app",
     featured: true,
   },
   {
@@ -45,7 +50,7 @@ export const projects: Project[] = [
     category: "Web Development",
     date: "2025-06-15",
     liveUrl: "https://election-system-mern-dqcj.vercel.app/",
-    githubUrl: "https://github.com/damstech/election-system",
+    githubUrl: "https://github.com/amuhammed005/ElectionSystem-MERN",
     featured: true,
   },
   {
@@ -61,24 +66,24 @@ export const projects: Project[] = [
     category: "Web Development",
     date: "2024-11-20",
     liveUrl: "https://movie-library-seven.vercel.app/",
-    githubUrl: "https://github.com/damstech/movie-app",
+    githubUrl: "https://github.com/amuhammed005/next-imdb",
     featured: true,
   },
   // {
-    // id: "webdevblog",
-    // title: "Web Development Blog Platform",
-    // description:
-      // "A full-stack blog application built with Next.js, featuring an admin dashboard for content management.",
-    // fullDescription:
-      // "This project is a full-stack blog platform built using Next.js with both frontend and backend capabilities. It includes an admin dashboard for managing posts, editing content, and controlling application data. The project demonstrates modern full-stack development practices including server-side rendering, API routes, and structured content management. It is currently under development and will showcase advanced Next.js features upon completion.",
-    // image: "/images/projects/blog.png",
-    // images: ["/images/projects/blog.png"],
-    // technologies: ["Next.js", "React", "Node.js", "MongoDB"],
-    // category: "Web Development",
-    // date: "2026-02-10",
-    // liveUrl: "",
-    // githubUrl: "https://github.com/damstech/webdevblog",
-    // featured: false,
+  // id: "webdevblog",
+  // title: "Web Development Blog Platform",
+  // description:
+  // "A full-stack blog application built with Next.js, featuring an admin dashboard for content management.",
+  // fullDescription:
+  // "This project is a full-stack blog platform built using Next.js with both frontend and backend capabilities. It includes an admin dashboard for managing posts, editing content, and controlling application data. The project demonstrates modern full-stack development practices including server-side rendering, API routes, and structured content management. It is currently under development and will showcase advanced Next.js features upon completion.",
+  // image: "/images/projects/blog.png",
+  // images: ["/images/projects/blog.png"],
+  // technologies: ["Next.js", "React", "Node.js", "MongoDB"],
+  // category: "Web Development",
+  // date: "2026-02-10",
+  // liveUrl: "",
+  // githubUrl: "https://github.com/damstech/webdevblog",
+  // featured: false,
   // },
 ];
 
@@ -140,8 +145,7 @@ export const dataScienceProjects: Project[] = [
     date: "2026-01-15",
     githubUrl: "https://github.com/damstech/concrete-strength-prediction",
     featured: true,
-  }
-  ,
+  },
   {
     id: "exploratory-data-analysis",
     title: "Exploratory Data Analysis & Statistical Insights",
@@ -201,11 +205,19 @@ export const dataScienceProjects: Project[] = [
 ];
 
 // Combine all projects
-export const allProjects: Project[] = [...projects, ...dataScienceProjects]
+export const allProjects: Project[] = [...projects, ...dataScienceProjects];
 
-export const featuredProjects = allProjects.filter((p) => p.featured)
-export const otherProjects = allProjects.filter((p) => !p.featured)
+export const featuredProjects = allProjects.filter((p) => p.featured);
+export const otherProjects = allProjects.filter((p) => !p.featured);
 
 // Filter helpers
-export const webDevProjects = allProjects.filter((p) => p.category === "Web Development" || p.category === "Developer Tools" || p.category === "Education" || p.category === "Fun & Games")
-export const dsProjects = allProjects.filter((p) => p.category === "Data Science")
+export const webDevProjects = allProjects.filter(
+  (p) =>
+    p.category === "Web Development" ||
+    p.category === "Developer Tools" ||
+    p.category === "Education" ||
+    p.category === "Fun & Games",
+);
+export const dsProjects = allProjects.filter(
+  (p) => p.category === "Data Science",
+);
