@@ -10,7 +10,7 @@ As a Software Developer, I possess expertise in developing full-stack web applic
 
 Apart from software development, my area of interest is in Data Science and Machine Learning. I have been involved in various data-oriented projects wherein I have been responsible for data wrangling, performing EDA (Exploratory Data Analysis), and constructing models using Python.
 I am deeply interested in creating systems that incorporate software development and data-driven analytics. I am available for software development, data science, and machine learning roles.`,
-  resumeUrl: "/resume.pdf",
+  resumeUrl: "/adams-resume.pdf",
   avatar: "/images/avatar.jpg",
   whatsapp: "+233243323019",
 };

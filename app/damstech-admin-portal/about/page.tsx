@@ -1,13 +1,19 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { AdminShell } from "@/components/admin/admin-shell"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { AdminShell } from "@/components/admin/admin-shell";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -16,15 +22,23 @@ import {
   FormLabel,
   FormMessage,
   FormDescription,
-} from "@/components/ui/form"
-import { Skeleton } from "@/components/ui/skeleton"
-import { Loader2, Save, User, Mail, MapPin, FileText, Phone } from "lucide-react"
-import { personalInfoSchema, type PersonalInfoInput } from "@/lib/validations"
-import { toast } from "sonner"
+} from "@/components/ui/form";
+import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Loader2,
+  Save,
+  User,
+  Mail,
+  MapPin,
+  FileText,
+  Phone,
+} from "lucide-react";
+import { personalInfoSchema, type PersonalInfoInput } from "@/lib/validations";
+import { toast } from "sonner";
 
 export default function AboutPage() {
-  const [isLoading, setIsLoading] = useState(true)
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<PersonalInfoInput>({
     resolver: zodResolver(personalInfoSchema),
@@ -39,45 +53,45 @@ export default function AboutPage() {
       avatar: "",
       whatsapp: "",
     },
-  })
+  });
 
   const fetchData = async () => {
     try {
-      const response = await fetch("/api/about")
-      const data = await response.json()
+      const response = await fetch("/api/about");
+      const data = await response.json();
       if (data) {
-        form.reset(data)
+        form.reset(data);
       }
     } catch (error) {
-      console.error("Failed to fetch personal info:", error)
+      console.error("Failed to fetch personal info:", error);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
-    fetchData()
-  }, [])
+    fetchData();
+  }, []);
 
   const onSubmit = async (data: PersonalInfoInput) => {
-    setIsSubmitting(true)
+    setIsSubmitting(true);
     try {
       const response = await fetch("/api/admin/about", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
-      })
+      });
 
-      if (!response.ok) throw new Error("Failed to save personal info")
+      if (!response.ok) throw new Error("Failed to save personal info");
 
-      toast.success("Personal information updated successfully!")
+      toast.success("Personal information updated successfully!");
     } catch (error) {
-      console.error("Error saving personal info:", error)
-      toast.error("Failed to save personal information")
+      console.error("Error saving personal info:", error);
+      toast.error("Failed to save personal information");
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   if (isLoading) {
     return (
@@ -99,14 +113,17 @@ export default function AboutPage() {
           </Card>
         </div>
       </AdminShell>
-    )
+    );
   }
 
   return (
     <AdminShell title="About">
       <div className="mx-auto max-w-3xl">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-6">
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="flex flex-col gap-6"
+          >
             {/* Basic Information */}
             <Card className="border-border/50 bg-card/50">
               <CardHeader>
@@ -141,7 +158,10 @@ export default function AboutPage() {
                       <FormItem>
                         <FormLabel>Professional Title</FormLabel>
                         <FormControl>
-                          <Input placeholder="Full Stack Developer" {...field} />
+                          <Input
+                            placeholder="Full Stack Developer"
+                            {...field}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -199,9 +219,7 @@ export default function AboutPage() {
                   <Mail className="h-5 w-5" />
                   Contact Information
                 </CardTitle>
-                <CardDescription>
-                  How people can reach you
-                </CardDescription>
+                <CardDescription>How people can reach you</CardDescription>
               </CardHeader>
               <CardContent className="flex flex-col gap-4">
                 <div className="grid gap-4 md:grid-cols-2">
@@ -232,9 +250,7 @@ export default function AboutPage() {
                         <FormControl>
                           <Input placeholder="+1234567890" {...field} />
                         </FormControl>
-                        <FormDescription>
-                          Include country code
-                        </FormDescription>
+                        <FormDescription>Include country code</FormDescription>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -267,9 +283,7 @@ export default function AboutPage() {
                   <FileText className="h-5 w-5" />
                   Media & Links
                 </CardTitle>
-                <CardDescription>
-                  Profile image and resume
-                </CardDescription>
+                <CardDescription>Profile image and resume</CardDescription>
               </CardHeader>
               <CardContent className="flex flex-col gap-4">
                 <FormField
@@ -334,5 +348,5 @@ export default function AboutPage() {
         </Form>
       </div>
     </AdminShell>
-  )
+  );
 }
