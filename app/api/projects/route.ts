@@ -12,7 +12,7 @@ export async function GET() {
     const projects = await db
       .collection<Project>(COLLECTIONS.PROJECTS)
       .find()
-      .sort({ createdAt: -1 })
+      .sort({ order: 1, createdAt: -1 })
       .toArray();
 
     // ✅ FIX: Map MongoDB _id to both _id and id fields for frontend compatibility
@@ -23,6 +23,9 @@ export async function GET() {
         _id: p._id?.toString(),
         // Ensure 'id' field exists - use existing 'id' or fallback to '_id'
         id: p.id || p._id?.toString(),
+        // Existing portfolio records predate project statuses; treat them as completed
+        // until they are updated from the dashboard.
+        status: p.status || "completed",
       })),
     );
   } catch (error) {

@@ -8,6 +8,8 @@ export type ProjectCategory =
   | "Education" 
   | "Fun & Games"
 
+export type ProjectStatus = "planning" | "in-progress" | "completed" | "archived"
+
 export interface Project {
   _id?: ObjectId
   id: string
@@ -22,6 +24,8 @@ export interface Project {
   liveUrl?: string
   githubUrl?: string
   featured: boolean
+  status: ProjectStatus
+  order?: number
   createdAt?: Date
   updatedAt?: Date
 }

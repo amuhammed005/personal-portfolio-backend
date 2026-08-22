@@ -65,10 +65,15 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const highestPriority = await db
+      .collection<Project>(COLLECTIONS.PROJECTS)
+      .findOne({}, { sort: { order: -1 } });
+
     const newProject: Omit<Project, "_id"> = {
       ...result.data,
       liveUrl: result.data.liveUrl || undefined,
       githubUrl: result.data.githubUrl || undefined,
+      order: result.data.order ?? (highestPriority?.order ?? 0) + 1,
       createdAt: new Date(),
       updatedAt: new Date(),
     };

@@ -49,6 +49,13 @@ const categories = [
   "Fun & Games",
 ] as const
 
+const statuses = [
+  { value: "planning", label: "Planning" },
+  { value: "in-progress", label: "In progress" },
+  { value: "completed", label: "Completed" },
+  { value: "archived", label: "Archived" },
+] as const
+
 export function ProjectForm({
   open,
   onOpenChange,
@@ -74,6 +81,8 @@ export function ProjectForm({
     liveUrl: "",
     githubUrl: "",
     featured: false,
+    status: "in-progress",
+    order: undefined,
   },
 })
 
@@ -85,6 +94,7 @@ useEffect(() => {
       ...initialData,
       technologies: initialData.technologies || [],
       images: initialData.images || [],
+      status: initialData.status || "completed",
     });
   } else {
     form.reset({
@@ -100,6 +110,8 @@ useEffect(() => {
       liveUrl: "",
       githubUrl: "",
       featured: false,
+      status: "in-progress",
+      order: undefined,
     });
   }
 }, [initialData, open]);
@@ -253,6 +265,31 @@ useEffect(() => {
                   </FormItem>
                 )}
               />
+
+              <FormField
+                control={form.control}
+                name="status"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Development Status</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select status" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {statuses.map((status) => (
+                          <SelectItem key={status.value} value={status.value}>
+                            {status.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </div>
 
             <FormField
@@ -338,6 +375,33 @@ useEffect(() => {
                       Featured projects appear prominently on the homepage.
                     </FormDescription>
                   </div>
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="order"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Display Order</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      min="0"
+                      placeholder="Automatically placed at the end"
+                      value={field.value ?? ""}
+                      onChange={(event) =>
+                        field.onChange(
+                          event.target.value === "" ? undefined : Number(event.target.value),
+                        )
+                      }
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    Lower numbers appear first. Leave blank to place a new project after existing projects.
+                  </FormDescription>
+                  <FormMessage />
                 </FormItem>
               )}
             />

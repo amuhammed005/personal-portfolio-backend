@@ -47,6 +47,13 @@ interface Project extends ProjectInput {
   createdAt?: string;
 }
 
+const statusLabels = {
+  planning: "Planning",
+  "in-progress": "In progress",
+  completed: "Completed",
+  archived: "Archived",
+} as const;
+
 export default function ProjectsPage() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -140,6 +147,7 @@ export default function ProjectsPage() {
                 <TableHead>Category</TableHead>
                 <TableHead>Technologies</TableHead>
                 <TableHead>Status</TableHead>
+                <TableHead>Order</TableHead>
                 <TableHead>Links</TableHead>
                 <TableHead className="w-12.5"></TableHead>
               </TableRow>
@@ -161,6 +169,9 @@ export default function ProjectsPage() {
                       <Skeleton className="h-4 w-16" />
                     </TableCell>
                     <TableCell>
+                      <Skeleton className="h-4 w-8" />
+                    </TableCell>
+                    <TableCell>
                       <Skeleton className="h-4 w-16" />
                     </TableCell>
                     <TableCell>
@@ -171,7 +182,7 @@ export default function ProjectsPage() {
               ) : filteredProjects.length === 0 ? (
                 <TableRow>
                   <TableCell
-                    colSpan={6}
+                    colSpan={7}
                     className="text-center text-muted-foreground py-8"
                   >
                     {searchQuery
@@ -207,12 +218,14 @@ export default function ProjectsPage() {
                       </div>
                     </TableCell>
                     <TableCell>
-                      {project.featured ? (
-                        <Badge>Featured</Badge>
-                      ) : (
-                        <Badge variant="outline">Standard</Badge>
-                      )}
+                      <div className="flex flex-wrap gap-1">
+                        <Badge variant={project.status === "completed" ? "default" : "outline"}>
+                          {statusLabels[project.status]}
+                        </Badge>
+                        {project.featured && <Badge variant="secondary">Featured</Badge>}
+                      </div>
                     </TableCell>
+                    <TableCell>{project.order ?? 0}</TableCell>
                     <TableCell>
                       <div className="flex gap-2">
                         {project.liveUrl && (

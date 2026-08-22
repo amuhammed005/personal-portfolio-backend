@@ -18,6 +18,8 @@ export interface Project {
   liveUrl?: string;
   githubUrl?: string;
   featured: boolean;
+  status: "planning" | "in-progress" | "completed" | "archived";
+  order?: number;
 }
 
 export const projects: Project[] = [
@@ -36,6 +38,8 @@ export const projects: Project[] = [
     liveUrl: "https://book-store-app-mern-umber.vercel.app/",
     githubUrl: "https://github.com/amuhammed005/book-store-app",
     featured: true,
+    status: "completed",
+    order: 1,
   },
   {
     id: "election-system",
@@ -52,6 +56,8 @@ export const projects: Project[] = [
     liveUrl: "https://election-system-mern-dqcj.vercel.app/",
     githubUrl: "https://github.com/amuhammed005/ElectionSystem-MERN",
     featured: true,
+    status: "completed",
+    order: 2,
   },
   {
     id: "movie-app",
@@ -68,6 +74,8 @@ export const projects: Project[] = [
     liveUrl: "https://movie-library-seven.vercel.app/",
     githubUrl: "https://github.com/amuhammed005/next-imdb",
     featured: true,
+    status: "completed",
+    order: 3,
   },
   // {
   // id: "webdevblog",
@@ -109,6 +117,8 @@ export const dataScienceProjects: Project[] = [
     date: "2024-04-15",
     githubUrl: "https://github.com/damstech/house-price-prediction",
     featured: true,
+    status: "completed",
+    order: 4,
   },
   {
     id: "air-quality-analysis",
@@ -124,6 +134,8 @@ export const dataScienceProjects: Project[] = [
     date: "2024-08-10",
     githubUrl: "https://github.com/damstech/air-quality-analysis",
     featured: true,
+    status: "completed",
+    order: 5,
   },
   {
     id: "concrete-strength-mlp",
@@ -145,6 +157,8 @@ export const dataScienceProjects: Project[] = [
     date: "2026-01-15",
     githubUrl: "https://github.com/damstech/concrete-strength-prediction",
     featured: true,
+    status: "completed",
+    order: 6,
   },
   {
     id: "exploratory-data-analysis",
@@ -166,6 +180,8 @@ export const dataScienceProjects: Project[] = [
     date: "2023-11-05",
     githubUrl: "https://github.com/damstech/exploratory-data-analysis",
     featured: false,
+    status: "completed",
+    order: 7,
   },
   {
     id: "predictive-modeling-regression",
@@ -181,6 +197,8 @@ export const dataScienceProjects: Project[] = [
     date: "2023-10-15",
     githubUrl: "https://github.com/damstech/predictive-modeling",
     featured: false,
+    status: "completed",
+    order: 8,
   },
   {
     id: "data-cleaning-pipeline",
@@ -201,6 +219,8 @@ export const dataScienceProjects: Project[] = [
     date: "2023-09-20",
     githubUrl: "https://github.com/damstech/data-cleaning-pipeline",
     featured: false,
+    status: "completed",
+    order: 9,
   },
 ];
 

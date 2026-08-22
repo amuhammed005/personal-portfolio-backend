@@ -20,6 +20,8 @@ export const projectSchema = z.object({
   liveUrl: z.string().url().optional().or(z.literal("")),
   githubUrl: z.string().url().optional().or(z.literal("")),
   featured: z.boolean(),
+  status: z.enum(["planning", "in-progress", "completed", "archived"]),
+  order: z.number().int().min(0).optional(),
 })
 
 // Skill validation
