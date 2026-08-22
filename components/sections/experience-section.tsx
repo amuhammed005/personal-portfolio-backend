@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import { experience as fallbackExperience } from "@/data/experience";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { ExternalLink } from "lucide-react";
@@ -8,6 +9,46 @@ import { useFetch } from "@/hooks/useFetch";
 import { ErrorState } from "../error-state";
 import { Experience } from "@/lib/types";
 import { Skeleton } from "../ui/skeleton";
+import { ShowMoreButton } from "../ui/show-more-button";
+import { useIsMobile } from "@/hooks/use-mobile";
+
+function ExperienceDescription({ description, id }: { description: string; id: string }) {
+  const [expanded, setExpanded] = useState(false);
+  const [canExpand, setCanExpand] = useState(false);
+  const descriptionRef = useRef<HTMLParagraphElement>(null);
+
+  useEffect(() => {
+    const element = descriptionRef.current;
+    if (!element) return;
+    const checkOverflow = () => setCanExpand(element.scrollHeight > element.clientHeight + 1);
+    checkOverflow();
+    const observer = new ResizeObserver(checkOverflow);
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [description]);
+
+  return (
+    <div>
+      <p
+        ref={descriptionRef}
+        id={id}
+        className={`text-muted-foreground leading-relaxed ${expanded ? "" : "line-clamp-12 md:line-clamp-none"}`}
+      >
+        {description}
+      </p>
+      {(canExpand || expanded) && (
+        <ShowMoreButton
+          className="mt-3 md:hidden"
+          expanded={expanded}
+          onClick={() => setExpanded((current) => !current)}
+          aria-controls={id}
+          moreLabel="Show more"
+          lessLabel="Show less"
+        />
+      )}
+    </div>
+  );
+}
 
 export function ExperienceSection() {
   const {
@@ -16,6 +57,8 @@ export function ExperienceSection() {
     error,
     refetch,
   } = useFetch<Experience[]>("/api/experience", fallbackExperience);
+  const isMobile = useIsMobile();
+  const [mobileExpanded, setMobileExpanded] = useState(false);
 
   if (loading) {
     // Handle loading state - show skeleton loaders while fetching data
@@ -65,6 +108,8 @@ export function ExperienceSection() {
     return <ErrorState message="No experience found." />;
   }
 
+  const visibleExperience = mobileExpanded || !isMobile ? experience : experience.slice(0, 2);
+
   return (
     <section id="experience" className="py-24 md:py-32">
       <div className="container mx-auto px-6">
@@ -79,8 +124,8 @@ export function ExperienceSection() {
             <SectionHeading title="Experience" />
           </motion.div>
 
-          <div className="max-w-3xl lg:max-w-full">
-            {experience?.map((job, index) => (
+          <div id="experience-list" className="max-w-3xl lg:max-w-full">
+            {visibleExperience.map((job, index) => (
               <motion.div
                 key={index}
                 className="relative pl-8 pb-12 last:pb-0 border-l border-border group"
@@ -120,9 +165,10 @@ export function ExperienceSection() {
                     </span>
                   </div>
 
-                  <p className="text-muted-foreground leading-relaxed">
-                    {job.description}
-                  </p>
+                  <ExperienceDescription
+                    description={job.description}
+                    id={`experience-description-${job._id?.toString() ?? index}`}
+                  />
 
                   <motion.div
                     className="flex flex-wrap gap-2 pt-2"
@@ -151,6 +197,17 @@ export function ExperienceSection() {
               </motion.div>
             ))}
           </div>
+          {experience.length > 2 && (
+            <div className="mt-8 flex justify-center md:hidden">
+              <ShowMoreButton
+                expanded={mobileExpanded}
+                onClick={() => setMobileExpanded((current) => !current)}
+                aria-controls="experience-list"
+                moreLabel="Show more experience"
+                lessLabel="Show fewer experiences"
+              />
+            </div>
+          )}
         </div>
       </div>
     </section>

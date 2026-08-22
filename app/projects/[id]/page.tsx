@@ -1,10 +1,10 @@
 "use client";
 
-import { use } from "react";
+import { use, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound, useRouter } from "next/navigation";
-import { ExternalLink, Github, ArrowLeft } from "lucide-react";
+import { ExternalLink, Github, ArrowLeft, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 // import { allProjects } from "@/data/projects"
 import { formatDate } from "@/lib/format-date";
@@ -21,6 +21,7 @@ interface ProjectPageProps {
 export default function ProjectDetailPage({ params }: ProjectPageProps) {
   const { id } = use(params);
   const router = useRouter();
+  const relatedProjectsRef = useRef<HTMLDivElement>(null);
 
   const {
     data: projects,
@@ -91,15 +92,18 @@ export default function ProjectDetailPage({ params }: ProjectPageProps) {
   // Get related projects from the same category first, then others
   const relatedProjects = projects
     ?.filter((p) => p.id !== project?.id)
-    .sort((a, b) => (a.category === project?.category ? -1 : 1))
-    .slice(0, 2);
+    .sort((a, b) => {
+      const aIsSimilar = a.category === project?.category ? 0 : 1;
+      const bIsSimilar = b.category === project?.category ? 0 : 1;
+      return aIsSimilar - bIsSimilar;
+    }) ?? [];
 
   return (
     <div className="min-h-screen pt-32 pb-20">
       <div className="container mx-auto px-6 max-w-4xl">
         {/* Back Button */}
         <motion.button
-          onClick={() => router.push("/#projects")}
+          onClick={() => router.push(`/?project=${encodeURIComponent(project?.id ?? id)}#projects`)}
           className="flex items-center gap-2 text-primary hover:text-primary/80 mb-8 font-medium"
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
@@ -122,6 +126,13 @@ export default function ProjectDetailPage({ params }: ProjectPageProps) {
             {project?.category === "Data Science" && (
               <span className="px-2 py-0.5 text-xs font-medium rounded-full bg-chart-4/20 text-chart-4 border border-chart-4/30">
                 Data Science
+              </span>
+            )}
+            {project?.status && (
+              <span className="px-2 py-0.5 text-xs font-medium rounded-full bg-secondary text-secondary-foreground border border-border">
+                {project.status === "in-progress"
+                  ? "In progress"
+                  : project.status[0].toUpperCase() + project.status.slice(1)}
               </span>
             )}
           </div>
@@ -210,6 +221,17 @@ export default function ProjectDetailPage({ params }: ProjectPageProps) {
                   </p>
                 </div>
 
+                {project?.status && (
+                  <div>
+                    <p className="text-sm text-muted-foreground mb-2">Status</p>
+                    <p className="text-foreground font-medium">
+                      {project.status === "in-progress"
+                        ? "In progress"
+                        : project.status[0].toUpperCase() + project.status.slice(1)}
+                    </p>
+                  </div>
+                )}
+
                 <div className="flex flex-col gap-3 pt-6 border-t border-border">
                   {project?.liveUrl && (
                     <Button asChild className="w-full">
@@ -242,21 +264,41 @@ export default function ProjectDetailPage({ params }: ProjectPageProps) {
         </div>
 
         {/* Related Projects */}
-        <motion.div
+        {relatedProjects.length > 0 && <motion.div
           className="border-t border-border pt-12"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.5 }}
         >
-          <h3 className="text-2xl font-bold text-foreground mb-8">
-            More Projects
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {relatedProjects?.map((relatedProject) => (
+          <div className="mb-8 flex items-center justify-between gap-4">
+            <h3 className="text-2xl font-bold text-foreground">Similar Projects</h3>
+            <div className="flex gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                aria-label="Previous similar projects"
+                onClick={() => relatedProjectsRef.current?.scrollBy({ left: -360, behavior: "smooth" })}
+              >
+                <ArrowLeft />
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                aria-label="Next similar projects"
+                onClick={() => relatedProjectsRef.current?.scrollBy({ left: 360, behavior: "smooth" })}
+              >
+                <ArrowRight />
+              </Button>
+            </div>
+          </div>
+          <div ref={relatedProjectsRef} className="flex gap-6 overflow-x-auto pb-3 snap-x snap-mandatory scroll-smooth">
+            {relatedProjects.map((relatedProject) => (
               <Link
                 key={relatedProject.id}
                 href={`/projects/${relatedProject.id}`}
-                className="group"
+                className="group min-w-[280px] flex-1 snap-start"
               >
                 <div className="bg-card border border-border rounded-lg overflow-hidden hover:shadow-lg hover:border-primary/50 transition-all duration-300">
                   {relatedProject.images && relatedProject.images[0] && (
@@ -281,7 +323,7 @@ export default function ProjectDetailPage({ params }: ProjectPageProps) {
               </Link>
             ))}
           </div>
-        </motion.div>
+        </motion.div>}
       </div>
     </div>
   );

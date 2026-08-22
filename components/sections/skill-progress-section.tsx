@@ -9,6 +9,8 @@ import { useFetch } from "@/hooks/useFetch"
 import { SkillLevel } from "@/lib/types"
 import { Skeleton } from "../ui/skeleton"
 import { ErrorState } from "../error-state"
+import { ShowMoreButton } from "../ui/show-more-button"
+import { useIsMobile } from "@/hooks/use-mobile"
 
 type FilterType = "All" | "Web" | "ML"
 
@@ -108,6 +110,8 @@ export function SkillProgressSection() {
     fallbackSkillLevels,
   )
   const [activeFilter, setActiveFilter] = useState<FilterType>("All")
+  const [mobileExpanded, setMobileExpanded] = useState(false)
+  const isMobile = useIsMobile()
   
   if (loading && skillLevels === null) {
     return (
@@ -161,6 +165,7 @@ export function SkillProgressSection() {
     if (activeFilter === "ML") return mlSkills.includes(skill.name)
     return true
   })
+  const visibleSkills = mobileExpanded || !isMobile ? filteredSkills : filteredSkills.slice(0, 6)
 
   const filters: { value: FilterType; label: string }[] = [
     { value: "All", label: "All Skills" },
@@ -204,7 +209,10 @@ export function SkillProgressSection() {
             {filters.map((filter) => (
               <button
                 key={filter.value}
-                onClick={() => setActiveFilter(filter.value)}
+                onClick={() => {
+                  setActiveFilter(filter.value)
+                  setMobileExpanded(false)
+                }}
                 className={cn(
                   "px-4 py-2 rounded-full text-sm font-medium transition-all duration-300",
                   activeFilter === filter.value
@@ -224,8 +232,8 @@ export function SkillProgressSection() {
             ))}
           </motion.div>
 
-          <div className="grid md:grid-cols-2 gap-x-12 gap-y-8">
-            {filteredSkills.map((skill, index) => (
+          <div id="skills-expertise-list" className="grid md:grid-cols-2 gap-x-12 gap-y-8">
+            {visibleSkills.map((skill, index) => (
               <SkillBar
                 key={skill.name}
                 name={skill.name}
@@ -234,6 +242,17 @@ export function SkillProgressSection() {
               />
             ))}
           </div>
+          {filteredSkills.length > 6 && (
+            <div className="mt-8 flex justify-center md:hidden">
+              <ShowMoreButton
+                expanded={mobileExpanded}
+                onClick={() => setMobileExpanded((current) => !current)}
+                aria-controls="skills-expertise-list"
+                moreLabel="Show more skills"
+                lessLabel="Show fewer skills"
+              />
+            </div>
+          )}
         </div>
       </div>
     </section>

@@ -187,7 +187,7 @@ export function SkillsSection() {
 
       {/* Web Development Section */}
       {showWebDev && (
-        <>
+        <div>
           <div className="container mx-auto px-6 mb-4">
             <div className="max-w-4xl mx-auto">
               <h3 className="text-lg font-semibold text-foreground flex items-center gap-2 justify-center lg:justify-start">
@@ -214,12 +214,12 @@ export function SkillsSection() {
               ))}
             </div>
           </div>
-        </>
+        </div>
       )}
 
       {/* Machine Learning Section */}
       {showML && (
-        <>
+        <div>
           <div className="container mx-auto px-6 mt-12 mb-4">
             <div className="max-w-4xl mx-auto">
               <h3 className="text-lg font-semibold text-foreground flex items-center gap-2 justify-center lg:justify-start">
@@ -250,7 +250,7 @@ export function SkillsSection() {
               ))}
             </div>
           </div>
-        </>
+        </div>
       )}
     </section>
   );

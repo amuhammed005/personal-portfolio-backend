@@ -15,6 +15,8 @@ import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useFetch } from "@/hooks/useFetch";
 import { ErrorState } from "../error-state";
+import { ShowMoreButton } from "../ui/show-more-button";
+import { useIsMobile } from "@/hooks/use-mobile";
 // Commented out: Type is now defined below instead of imported
 // import { Project } from "@/data/projects"
 
@@ -27,6 +29,8 @@ type Project = {
   technologies: string[];
   category: string;
   featured: boolean;
+  status?: "planning" | "in-progress" | "completed" | "archived";
+  order?: number;
   githubUrl?: string;
   liveUrl?: string;
 };
@@ -39,6 +43,8 @@ export function ProjectsSection() {
 
   // Filter state for project categories
   const [activeFilter, setActiveFilter] = useState<FilterType>("All");
+  const [expanded, setExpanded] = useState(false);
+  const isMobile = useIsMobile();
 
   // Commented out: No longer needed since we're using useFetch hook for state management
   // const [allProjects, setAllProjects] = useState<Project[]>([])
@@ -52,6 +58,21 @@ export function ProjectsSection() {
     error,
     refetch,
   } = useFetch<Project[]>("/api/projects", fallbackProjects);
+
+  useEffect(() => {
+    const projectId = new URLSearchParams(window.location.search).get("project");
+    if (!projectId || !projects?.some((project) => project.id === projectId)) return;
+
+    setExpanded(true);
+    const timeout = window.setTimeout(() => {
+      document.getElementById(`project-${projectId}`)?.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+    }, 100);
+
+    return () => window.clearTimeout(timeout);
+  }, [projects]);
 
   // Handle loading state - show spinner while fetching data
   if (loading)
@@ -96,9 +117,12 @@ export function ProjectsSection() {
     return project.category === "Data Science";
   });
 
-  // Separate projects into featured and non-featured for different display styles
-  const featuredProjects = filteredProjects?.filter((p) => p.featured);
-  const otherProjects = filteredProjects?.filter((p) => !p.featured);
+  const visibleLimit = isMobile ? 3 : 5;
+  const allFeaturedProjects = filteredProjects.filter((project) => project.featured);
+  const featuredProjects = expanded
+    ? allFeaturedProjects
+    : allFeaturedProjects.slice(0, visibleLimit);
+  const otherProjects = filteredProjects.filter((project) => !project.featured);
 
   // Available filter options
   const filters: FilterType[] = ["All", "Web Development", "Data Science"];
@@ -129,7 +153,10 @@ export function ProjectsSection() {
             {filters.map((filter) => (
               <button
                 key={filter}
-                onClick={() => setActiveFilter(filter)}
+                onClick={() => {
+                  setActiveFilter(filter);
+                  setExpanded(false);
+                }}
                 className={cn(
                   "px-4 py-2 rounded-full text-sm font-medium transition-all duration-300",
                   // Active filter gets primary styling, Data Science gets special chart-4 color
@@ -152,10 +179,11 @@ export function ProjectsSection() {
           </motion.div>
 
           {/* Featured Projects - Large card layout with alternating image positions */}
-          <div className="space-y-24 mb-24">
+          <div id="featured-projects" className="space-y-24 mb-24">
             {featuredProjects.map((project, index) => (
               <motion.div
-                key={project.title}
+                key={project.id}
+                id={`project-${project.id}`}
                 className={`relative grid md:grid-cols-12 gap-4 items-center ${
                   // Alternate text alignment for visual interest
                   index % 2 === 1 ? "md:text-right" : ""
@@ -213,6 +241,13 @@ export function ProjectsSection() {
                     {project.category === "Data Science" && (
                       <span className="px-2 py-0.5 text-xs font-medium rounded-full bg-chart-4/20 text-chart-4 border border-chart-4/30">
                         Data Science
+                      </span>
+                    )}
+                    {project.status && (
+                      <span className="px-2 py-0.5 text-xs font-medium rounded-full bg-secondary text-secondary-foreground border border-border">
+                        {project.status === "in-progress"
+                          ? "In progress"
+                          : project.status[0].toUpperCase() + project.status.slice(1)}
                       </span>
                     )}
                   </div>
@@ -288,6 +323,19 @@ export function ProjectsSection() {
             ))}
           </div>
 
+          {allFeaturedProjects.length > visibleLimit && (
+            <div className="mb-12 flex justify-center">
+              <ShowMoreButton
+                expanded={expanded}
+                onClick={() => setExpanded((current) => !current)}
+                aria-controls="featured-projects"
+                moreLabel="Show more projects"
+                lessLabel="Show fewer projects"
+              />
+            </div>
+          )}
+
+          {otherProjects.length > 0 && <>
           {/* Other Projects Section Header */}
           <motion.div
             className="text-center mb-12"
@@ -305,7 +353,8 @@ export function ProjectsSection() {
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {otherProjects.map((project, index) => (
               <motion.div
-                key={project.title}
+                key={project.id}
+                id={`project-${project.id}`}
                 className="group bg-card rounded-lg p-6 hover:-translate-y-2 transition-all duration-300 border border-border/50 hover:border-primary/50"
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -362,6 +411,11 @@ export function ProjectsSection() {
                       DS
                     </span>
                   )}
+                  {project.status && project.status !== "completed" && (
+                    <span className="px-1.5 py-0.5 text-[10px] font-medium rounded bg-secondary text-secondary-foreground">
+                      {project.status === "in-progress" ? "In progress" : project.status}
+                    </span>
+                  )}
                 </div>
 
                 {/* Project description - clamped to 3 lines */}
@@ -386,6 +440,7 @@ export function ProjectsSection() {
               </motion.div>
             ))}
           </div>
+          </>}
 
           {/* View More Button - links to GitHub profile */}
           <motion.div
