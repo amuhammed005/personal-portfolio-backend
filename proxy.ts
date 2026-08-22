@@ -9,7 +9,7 @@ const JWT_SECRET = new TextEncoder().encode(
 const PROTECTED_PATHS = ["/damstech-admin-portal"]
 const PUBLIC_PATHS = ["/damstech-admin-portal/login"]
 const API_PROTECTED_PATHS = ["/api/admin"]
-const API_PUBLIC_PATHS = ["/api/admin/auth/login", "/api/admin/auth/logout"]
+const API_PUBLIC_PATHS = ["/api/admin/auth/login", "/api/admin/auth/logout", "/api/admin/auth/guest"]
 
 export default async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
@@ -57,4 +57,3 @@ export const config = {
     "/api/admin/:path*",
   ],
 }
-

@@ -131,8 +131,9 @@ export interface NavLink {
 
 // Session types
 export interface AdminSession {
-  adminId: string
+  adminId?: string
   username: string
   email: string
+  role?: "admin" | "guest"
   exp: number
 }

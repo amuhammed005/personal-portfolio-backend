@@ -69,7 +69,7 @@ const sidebarLinks = [
   },
 ]
 
-export function AdminSidebar() {
+export function AdminSidebar({ isGuest }: { isGuest: boolean }) {
   const pathname = usePathname()
   const router = useRouter()
   const [collapsed, setCollapsed] = useState(false)
@@ -110,7 +110,7 @@ export function AdminSidebar() {
       {/* Navigation */}
       <ScrollArea className="flex-1 px-2 py-4">
         <nav className="flex flex-col gap-1">
-          {sidebarLinks.map((link) => {
+          {sidebarLinks.filter((link) => !isGuest || !["Messages", "Settings"].includes(link.title)).map((link) => {
             const isActive = pathname === link.href || 
               (link.href !== "/damstech-admin-portal" && pathname.startsWith(link.href))
             
@@ -147,7 +147,7 @@ export function AdminSidebar() {
           title={collapsed ? "Logout" : undefined}
         >
           <LogOut className="h-5 w-5 shrink-0" />
-          {!collapsed && <span>Logout</span>}
+          {!collapsed && <span>{isGuest ? "Exit Guest View" : "Logout"}</span>}
         </Button>
       </div>
     </div>

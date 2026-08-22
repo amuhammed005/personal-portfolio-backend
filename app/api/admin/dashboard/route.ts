@@ -9,6 +9,24 @@ export async function GET() {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
+    // Guests may inspect portfolio content, but message metadata and previews
+    // are deliberately never returned to their session.
+    if (session.role === "guest") {
+      const db = await getDatabase()
+      const [projectsCount, skillsCount, experienceCount, recentProjects] = await Promise.all([
+        db.collection(COLLECTIONS.PROJECTS).countDocuments(),
+        db.collection(COLLECTIONS.SKILLS).countDocuments(),
+        db.collection(COLLECTIONS.EXPERIENCE).countDocuments(),
+        db.collection(COLLECTIONS.PROJECTS).find().sort({ createdAt: -1 }).limit(5).toArray(),
+      ])
+
+      return NextResponse.json({
+        stats: { projects: projectsCount, skills: skillsCount, experience: experienceCount, messages: 0, unreadMessages: 0 },
+        recentMessages: [],
+        recentProjects: recentProjects.map((proj) => ({ ...proj, _id: proj._id.toString() })),
+      })
+    }
+
     const db = await getDatabase()
 
     // Get counts

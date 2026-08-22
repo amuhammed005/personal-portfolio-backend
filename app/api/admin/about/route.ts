@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
-import { getSession } from "@/lib/auth"
+import { getSession, isAdminSession } from "@/lib/auth"
 import { getDatabase, COLLECTIONS } from "@/lib/mongodb"
 import { personalInfoSchema } from "@/lib/validations"
 // import type { PersonalInfo } from "@/lib/types"
@@ -7,8 +7,8 @@ import { personalInfoSchema } from "@/lib/validations"
 export async function PUT(request: NextRequest) {
   try {
     const session = await getSession()
-    if (!session) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    if (!isAdminSession(session)) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 })
     }
 
     const body = await request.json()

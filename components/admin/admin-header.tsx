@@ -18,9 +18,10 @@ import Link from "next/link"
 interface AdminUser {
   username: string
   email: string
+  role?: "admin" | "guest"
 }
 
-export function AdminHeader({ title }: { title: string }) {
+export function AdminHeader({ title, isGuest }: { title: string; isGuest: boolean }) {
   const router = useRouter()
   const [user, setUser] = useState<AdminUser | null>(null)
 
@@ -50,6 +51,11 @@ export function AdminHeader({ title }: { title: string }) {
       <h1 className="text-xl font-semibold text-foreground">{title}</h1>
 
       <div className="flex items-center gap-4">
+        {isGuest && (
+          <span className="rounded-full border border-border bg-muted px-3 py-1 text-xs font-medium text-muted-foreground">
+            Guest · View only
+          </span>
+        )}
         <Button variant="outline" size="sm" asChild>
           <Link href="/" target="_blank" className="gap-2">
             <ExternalLink className="h-4 w-4" />
@@ -74,26 +80,28 @@ export function AdminHeader({ title }: { title: string }) {
                 <p className="text-xs text-muted-foreground">{user?.email}</p>
               </div>
             </DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem asChild>
-              <Link href="/damstech-admin-portal/about" className="cursor-pointer">
-                <User className="mr-2 h-4 w-4" />
-                Edit Profile
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link href="/damstech-admin-portal/settings" className="cursor-pointer">
-                <Settings className="mr-2 h-4 w-4" />
-                Settings
-              </Link>
-            </DropdownMenuItem>
+            {!isGuest && <>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem asChild>
+                <Link href="/damstech-admin-portal/about" className="cursor-pointer">
+                  <User className="mr-2 h-4 w-4" />
+                  Edit Profile
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/damstech-admin-portal/settings" className="cursor-pointer">
+                  <Settings className="mr-2 h-4 w-4" />
+                  Settings
+                </Link>
+              </DropdownMenuItem>
+            </>}
             <DropdownMenuSeparator />
             <DropdownMenuItem
               onClick={handleLogout}
               className="cursor-pointer text-destructive focus:text-destructive"
             >
               <LogOut className="mr-2 h-4 w-4" />
-              Logout
+              {isGuest ? "Exit Guest View" : "Logout"}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

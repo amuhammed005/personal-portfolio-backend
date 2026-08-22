@@ -11,11 +11,14 @@ interface AdminShellProps {
   title: string
 }
 
+export type AdminRole = "admin" | "guest"
+
 export function AdminShell({ children, title }: AdminShellProps) {
   const router = useRouter()
   const pathname = usePathname()
   const [isLoading, setIsLoading] = useState(true)
   const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [role, setRole] = useState<AdminRole>("admin")
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -29,6 +32,7 @@ export function AdminShell({ children, title }: AdminShellProps) {
         }
 
         setIsAuthenticated(true)
+        setRole(data.user?.role === "guest" ? "guest" : "admin")
       } catch {
         router.push("/damstech-admin-portal/login")
       } finally {
@@ -60,10 +64,19 @@ export function AdminShell({ children, title }: AdminShellProps) {
 
   return (
     <div className="flex min-h-screen bg-background">
-      <AdminSidebar />
+      <AdminSidebar isGuest={role === "guest"} />
       <div className="flex flex-1 flex-col overflow-hidden">
-        <AdminHeader title={title} />
-        <main className="flex-1 overflow-auto p-6">{children}</main>
+        <AdminHeader title={title} isGuest={role === "guest"} />
+        <main className="relative flex-1 overflow-auto p-6">
+          {children}
+          {role === "guest" && (
+            <div
+              className="absolute inset-0 z-20 cursor-not-allowed"
+              title="Guest access is view-only. Editing is disabled."
+              aria-label="Guest access is view-only"
+            />
+          )}
+        </main>
       </div>
     </div>
   )

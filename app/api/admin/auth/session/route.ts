@@ -14,6 +14,7 @@ export async function GET() {
       user: {
         username: session.username,
         email: session.email,
+        role: session.role ?? "admin",
       },
     })
   } catch (error) {

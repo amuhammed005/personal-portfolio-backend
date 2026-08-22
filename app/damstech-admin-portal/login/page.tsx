@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Loader2, Lock, User } from "lucide-react"
+import { Eye, Loader2, Lock, User } from "lucide-react"
 
 export default function AdminLoginPage() {
   const router = useRouter()
@@ -15,6 +15,22 @@ export default function AdminLoginPage() {
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
   const [isLoading, setIsLoading] = useState(false)
+
+  const handleGuestAccess = async () => {
+    setIsLoading(true)
+    setError("")
+
+    try {
+      const response = await fetch("/api/admin/auth/guest", { method: "POST" })
+      if (!response.ok) throw new Error("Guest access failed")
+      router.push("/damstech-admin-portal")
+      router.refresh()
+    } catch {
+      setError("Unable to start guest access")
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -108,6 +124,19 @@ export default function AdminLoginPage() {
                 "Sign In"
               )}
             </Button>
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full"
+              disabled={isLoading}
+              onClick={handleGuestAccess}
+            >
+              <Eye className="mr-2 h-4 w-4" />
+              Proceed as Guest
+            </Button>
+            <p className="text-center text-xs text-muted-foreground">
+              Guest access is view-only. Editing and message content are unavailable.
+            </p>
           </form>
         </CardContent>
       </Card>

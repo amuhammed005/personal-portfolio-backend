@@ -26,6 +26,7 @@ export async function createSession(admin: Admin): Promise<string> {
     adminId: admin._id!.toString(),
     username: admin.username,
     email: admin.email,
+    role: "admin",
   })
     .setProtectedHeader({ alg: "HS256" })
     .setExpirationTime("7d")
@@ -33,6 +34,22 @@ export async function createSession(admin: Admin): Promise<string> {
     .sign(JWT_SECRET)
 
   return token
+}
+
+export async function createGuestSession(): Promise<string> {
+  return new SignJWT({
+    username: "Guest",
+    email: "",
+    role: "guest",
+  })
+    .setProtectedHeader({ alg: "HS256" })
+    .setExpirationTime("1d")
+    .setIssuedAt()
+    .sign(JWT_SECRET)
+}
+
+export function isAdminSession(session: AdminSession | null): session is AdminSession {
+  return Boolean(session && session.role !== "guest")
 }
 
 export async function verifySession(token: string): Promise<AdminSession | null> {
@@ -55,13 +72,13 @@ export async function getSession(): Promise<AdminSession | null> {
   return verifySession(token)
 }
 
-export async function setSessionCookie(token: string): Promise<void> {
+export async function setSessionCookie(token: string, maxAge = 60 * 60 * 24 * 7): Promise<void> {
   const cookieStore = await cookies()
   cookieStore.set(COOKIE_NAME, token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
-    maxAge: 60 * 60 * 24 * 7, // 7 days
+    maxAge,
     path: "/",
   })
 }

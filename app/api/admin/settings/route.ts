@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { ObjectId } from "mongodb"
-import { getSession, hashPassword, verifyPassword } from "@/lib/auth"
+import { getSession, hashPassword, isAdminSession, verifyPassword } from "@/lib/auth"
 import { getDatabase, COLLECTIONS } from "@/lib/mongodb"
 import { passwordChangeSchema } from "@/lib/validations"
 import type { Admin } from "@/lib/types"
@@ -9,8 +9,8 @@ import type { Admin } from "@/lib/types"
 export async function GET() {
   try {
     const session = await getSession()
-    if (!session) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    if (!isAdminSession(session)) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 })
     }
 
     const db = await getDatabase()
@@ -38,8 +38,8 @@ export async function GET() {
 export async function PUT(request: NextRequest) {
   try {
     const session = await getSession()
-    if (!session) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    if (!isAdminSession(session)) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 })
     }
 
     const body = await request.json()
