@@ -1,65 +1,65 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { useRouter, usePathname } from "next/navigation"
-import { AdminSidebar } from "./admin-sidebar"
-import { AdminHeader } from "./admin-header"
-import { Loader2 } from "lucide-react"
+import { useEffect, useState } from "react";
+import { useRouter, usePathname } from "next/navigation";
+import { AdminSidebar } from "./admin-sidebar";
+import { AdminHeader } from "./admin-header";
+import { Loader2 } from "lucide-react";
 
 interface AdminShellProps {
-  children: React.ReactNode
-  title: string
+  children: React.ReactNode;
+  title: string;
 }
 
-export type AdminRole = "admin" | "guest"
+export type AdminRole = "admin" | "guest";
 
 export function AdminShell({ children, title }: AdminShellProps) {
-  const router = useRouter()
-  const pathname = usePathname()
-  const [isLoading, setIsLoading] = useState(true)
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const [role, setRole] = useState<AdminRole>("admin")
+  const router = useRouter();
+  const pathname = usePathname();
+  const [isLoading, setIsLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [role, setRole] = useState<AdminRole>("admin");
 
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const response = await fetch("/api/admin/auth/session")
-        const data = await response.json()
+        const response = await fetch("/api/admin/auth/session");
+        const data = await response.json();
 
         if (!data.authenticated) {
-          router.push("/damstech-admin-portal/login")
-          return
+          router.push("/admin/login");
+          return;
         }
 
-        setIsAuthenticated(true)
-        setRole(data.user?.role === "guest" ? "guest" : "admin")
+        setIsAuthenticated(true);
+        setRole(data.user?.role === "guest" ? "guest" : "admin");
       } catch {
-        router.push("/damstech-admin-portal/login")
+        router.push("/admin/login");
       } finally {
-        setIsLoading(false)
+        setIsLoading(false);
       }
-    }
+    };
 
     // Skip auth check for login page
-    if (pathname === "/damstech-admin-portal/login") {
-      setIsLoading(false)
-      setIsAuthenticated(true)
-      return
+    if (pathname === "/admin/login") {
+      setIsLoading(false);
+      setIsAuthenticated(true);
+      return;
     }
 
-    checkAuth()
-  }, [pathname, router])
+    checkAuth();
+  }, [pathname, router]);
 
   if (isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
-    )
+    );
   }
 
   if (!isAuthenticated) {
-    return null
+    return null;
   }
 
   return (
@@ -79,5 +79,5 @@ export function AdminShell({ children, title }: AdminShellProps) {
         </main>
       </div>
     </div>
-  )
+  );
 }

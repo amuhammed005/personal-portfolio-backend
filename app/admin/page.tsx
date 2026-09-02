@@ -1,10 +1,16 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { AdminShell } from "@/components/admin/admin-shell"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Skeleton } from "@/components/ui/skeleton"
+import { useEffect, useState } from "react";
+import { AdminShell } from "@/components/admin/admin-shell";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   FolderKanban,
   Wrench,
@@ -12,35 +18,35 @@ import {
   MessageSquare,
   Mail,
   Clock,
-} from "lucide-react"
-import { formatDistanceToNow } from "date-fns"
-import Link from "next/link"
+} from "lucide-react";
+import { formatDistanceToNow } from "date-fns";
+import Link from "next/link";
 
 interface DashboardStats {
-  projects: number
-  skills: number
-  experience: number
-  messages: number
-  unreadMessages: number
+  projects: number;
+  skills: number;
+  experience: number;
+  messages: number;
+  unreadMessages: number;
 }
 
 interface RecentMessage {
-  _id: string
-  name: string
-  email: string
-  subject?: string
-  message: string
-  read: boolean
-  createdAt: string
+  _id: string;
+  name: string;
+  email: string;
+  subject?: string;
+  message: string;
+  read: boolean;
+  createdAt: string;
 }
 
 interface RecentProject {
-  _id: string
-  id: string
-  title: string
-  category: string
-  featured: boolean
-  createdAt: string
+  _id: string;
+  id: string;
+  title: string;
+  category: string;
+  featured: boolean;
+  createdAt: string;
 }
 
 const statCards = [
@@ -48,7 +54,7 @@ const statCards = [
     title: "Projects",
     key: "projects" as const,
     icon: FolderKanban,
-    href: "/damstech-admin-portal/projects",
+    href: "/admin/projects",
     color: "text-blue-500",
     bgColor: "bg-blue-500/10",
   },
@@ -56,7 +62,7 @@ const statCards = [
     title: "Skills",
     key: "skills" as const,
     icon: Wrench,
-    href: "/damstech-admin-portal/skills",
+    href: "/admin/skills",
     color: "text-green-500",
     bgColor: "bg-green-500/10",
   },
@@ -64,7 +70,7 @@ const statCards = [
     title: "Experience",
     key: "experience" as const,
     icon: Briefcase,
-    href: "/damstech-admin-portal/experience",
+    href: "/admin/experience",
     color: "text-orange-500",
     bgColor: "bg-orange-500/10",
   },
@@ -72,34 +78,34 @@ const statCards = [
     title: "Messages",
     key: "messages" as const,
     icon: MessageSquare,
-    href: "/damstech-admin-portal/messages",
+    href: "/admin/messages",
     color: "text-purple-500",
     bgColor: "bg-purple-500/10",
   },
-]
+];
 
 export default function AdminDashboardPage() {
-  const [stats, setStats] = useState<DashboardStats | null>(null)
-  const [recentMessages, setRecentMessages] = useState<RecentMessage[]>([])
-  const [recentProjects, setRecentProjects] = useState<RecentProject[]>([])
-  const [isLoading, setIsLoading] = useState(true)
+  const [stats, setStats] = useState<DashboardStats | null>(null);
+  const [recentMessages, setRecentMessages] = useState<RecentMessage[]>([]);
+  const [recentProjects, setRecentProjects] = useState<RecentProject[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("/api/admin/dashboard")
-        const data = await response.json()
-        setStats(data.stats)
-        setRecentMessages(data.recentMessages || [])
-        setRecentProjects(data.recentProjects || [])
+        const response = await fetch("/api/admin/dashboard");
+        const data = await response.json();
+        setStats(data.stats);
+        setRecentMessages(data.recentMessages || []);
+        setRecentProjects(data.recentProjects || []);
       } catch (error) {
-        console.error("Failed to fetch dashboard data:", error)
+        console.error("Failed to fetch dashboard data:", error);
       } finally {
-        setIsLoading(false)
+        setIsLoading(false);
       }
-    }
-    fetchData()
-  }, [])
+    };
+    fetchData();
+  }, []);
 
   return (
     <AdminShell title="Dashboard">
@@ -125,11 +131,13 @@ export default function AdminDashboardPage() {
                       <span className="text-3xl font-bold text-foreground">
                         {stats?.[card.key] || 0}
                       </span>
-                      {card.key === "messages" && stats?.unreadMessages && stats.unreadMessages > 0 && (
-                        <Badge variant="destructive" className="text-xs">
-                          {stats.unreadMessages} unread
-                        </Badge>
-                      )}
+                      {card.key === "messages" &&
+                        stats?.unreadMessages &&
+                        stats.unreadMessages > 0 && (
+                          <Badge variant="destructive" className="text-xs">
+                            {stats.unreadMessages} unread
+                          </Badge>
+                        )}
                     </div>
                   )}
                 </CardContent>
@@ -166,7 +174,7 @@ export default function AdminDashboardPage() {
                   {recentMessages.map((message) => (
                     <Link
                       key={message._id}
-                      href={`/damstech-admin-portal/messages`}
+                      href={`/admin/messages`}
                       className="group flex flex-col gap-1 rounded-lg border border-border/50 p-3 transition-colors hover:bg-accent"
                     >
                       <div className="flex items-center justify-between">
@@ -184,7 +192,9 @@ export default function AdminDashboardPage() {
                       </p>
                       <div className="flex items-center gap-1 text-xs text-muted-foreground">
                         <Clock className="h-3 w-3" />
-                        {formatDistanceToNow(new Date(message.createdAt), { addSuffix: true })}
+                        {formatDistanceToNow(new Date(message.createdAt), {
+                          addSuffix: true,
+                        })}
                       </div>
                     </Link>
                   ))}
@@ -219,7 +229,7 @@ export default function AdminDashboardPage() {
                   {recentProjects.map((project) => (
                     <Link
                       key={project._id}
-                      href={`/damstech-admin-portal/projects`}
+                      href={`/admin/projects`}
                       className="group flex flex-col gap-1 rounded-lg border border-border/50 p-3 transition-colors hover:bg-accent"
                     >
                       <div className="flex items-center justify-between">
@@ -238,7 +248,9 @@ export default function AdminDashboardPage() {
                         </Badge>
                         {project.createdAt && (
                           <span className="text-xs text-muted-foreground">
-                            {formatDistanceToNow(new Date(project.createdAt), { addSuffix: true })}
+                            {formatDistanceToNow(new Date(project.createdAt), {
+                              addSuffix: true,
+                            })}
                           </span>
                         )}
                       </div>
@@ -251,5 +263,5 @@ export default function AdminDashboardPage() {
         </div>
       </div>
     </AdminShell>
-  )
+  );
 }

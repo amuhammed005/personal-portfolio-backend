@@ -1,64 +1,70 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Eye, Loader2, Lock, User } from "lucide-react"
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Eye, Loader2, Lock, User } from "lucide-react";
 
 export default function AdminLoginPage() {
-  const router = useRouter()
-  const [username, setUsername] = useState("")
-  const [password, setPassword] = useState("")
-  const [error, setError] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
+  const router = useRouter();
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleGuestAccess = async () => {
-    setIsLoading(true)
-    setError("")
+    setIsLoading(true);
+    setError("");
 
     try {
-      const response = await fetch("/api/admin/auth/guest", { method: "POST" })
-      if (!response.ok) throw new Error("Guest access failed")
-      router.push("/damstech-admin-portal")
-      router.refresh()
+      const response = await fetch("/api/admin/auth/guest", { method: "POST" });
+      if (!response.ok) throw new Error("Guest access failed");
+      router.push("/admin");
+      router.refresh();
     } catch {
-      setError("Unable to start guest access")
+      setError("Unable to start guest access");
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsLoading(true)
-    setError("")
+    e.preventDefault();
+    setIsLoading(true);
+    setError("");
 
     try {
       const response = await fetch("/api/admin/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),
-      })
+      });
 
-      const data = await response.json()
+      const data = await response.json();
 
       if (!response.ok) {
-        setError(data.error || "Login failed")
-        return
+        setError(data.error || "Login failed");
+        return;
       }
 
-      router.push("/damstech-admin-portal")
-      router.refresh()
+      router.push("/admin");
+      router.refresh();
     } catch {
-      setError("An unexpected error occurred")
+      setError("An unexpected error occurred");
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background p-4">
@@ -67,7 +73,9 @@ export default function AdminLoginPage() {
           <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
             <Lock className="h-6 w-6 text-primary" />
           </div>
-          <CardTitle className="text-2xl font-bold text-foreground">Admin Access</CardTitle>
+          <CardTitle className="text-2xl font-bold text-foreground">
+            Admin Access
+          </CardTitle>
           <CardDescription className="text-muted-foreground">
             Enter your credentials to continue
           </CardDescription>
@@ -81,7 +89,9 @@ export default function AdminLoginPage() {
             )}
 
             <div className="flex flex-col gap-2">
-              <Label htmlFor="username" className="text-foreground">Username</Label>
+              <Label htmlFor="username" className="text-foreground">
+                Username
+              </Label>
               <div className="relative">
                 <User className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <Input
@@ -98,7 +108,9 @@ export default function AdminLoginPage() {
             </div>
 
             <div className="flex flex-col gap-2">
-              <Label htmlFor="password" className="text-foreground">Password</Label>
+              <Label htmlFor="password" className="text-foreground">
+                Password
+              </Label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <Input
@@ -135,11 +147,12 @@ export default function AdminLoginPage() {
               Proceed as Guest
             </Button>
             <p className="text-center text-xs text-muted-foreground">
-              Guest access is view-only. Editing and message content are unavailable.
+              Guest access is view-only. Editing and message content are
+              unavailable.
             </p>
           </form>
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

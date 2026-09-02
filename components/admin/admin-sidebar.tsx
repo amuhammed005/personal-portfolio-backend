@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { usePathname, useRouter } from "next/navigation"
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { ScrollArea } from "@/components/ui/scroll-area"
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   LayoutDashboard,
   FolderKanban,
@@ -18,79 +18,79 @@ import {
   Settings,
   ChevronLeft,
   ChevronRight,
-} from "lucide-react"
-import { useState } from "react"
+} from "lucide-react";
+import { useState } from "react";
 
 const sidebarLinks = [
   {
     title: "Dashboard",
-    href: "/damstech-admin-portal",
+    href: "/admin",
     icon: LayoutDashboard,
   },
   {
     title: "Projects",
-    href: "/damstech-admin-portal/projects",
+    href: "/admin/projects",
     icon: FolderKanban,
   },
   {
     title: "Skills",
-    href: "/damstech-admin-portal/skills",
+    href: "/admin/skills",
     icon: Wrench,
   },
   {
     title: "Experience",
-    href: "/damstech-admin-portal/experience",
+    href: "/admin/experience",
     icon: Briefcase,
   },
   {
     title: "About",
-    href: "/damstech-admin-portal/about",
+    href: "/admin/about",
     icon: User,
   },
   {
     title: "Messages",
-    href: "/damstech-admin-portal/messages",
+    href: "/admin/messages",
     icon: MessageSquare,
   },
   {
     title: "Stats",
-    href: "/damstech-admin-portal/stats",
+    href: "/admin/stats",
     icon: BarChart3,
   },
   {
     title: "Social Links",
-    href: "/damstech-admin-portal/social-links",
+    href: "/admin/social-links",
     icon: LinkIcon,
   },
   {
     title: "Settings",
-    href: "/damstech-admin-portal/settings",
+    href: "/admin/settings",
     icon: Settings,
   },
-]
+];
 
 export function AdminSidebar({ isGuest }: { isGuest: boolean }) {
-  const pathname = usePathname()
-  const router = useRouter()
-  const [collapsed, setCollapsed] = useState(false)
+  const pathname = usePathname();
+  const router = useRouter();
+  const [collapsed, setCollapsed] = useState(false);
 
   const handleLogout = async () => {
-    await fetch("/api/admin/auth/logout", { method: "POST" })
-    router.push("/damstech-admin-portal/login")
-    router.refresh()
-  }
+    await fetch("/api/admin/auth/logout", { method: "POST" });
+    router.push("/admin/login");
+    router.refresh();
+  };
 
   return (
     <div
       className={cn(
         "relative flex h-screen flex-col border-r border-border/50 bg-card/50 backdrop-blur transition-all duration-300",
-        collapsed ? "w-16" : "w-64"
+        collapsed ? "w-16" : "w-64",
       )}
     >
       {/* Header */}
       <div className="flex h-16 items-center justify-between border-b border-border/50 px-4">
         {!collapsed && (
-          <Link href="/damstech-admin-portal" className="flex items-center gap-2">
+          <Link href="/admin" className="flex items-center gap-2">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold">
               D
             </div>
@@ -103,35 +103,45 @@ export function AdminSidebar({ isGuest }: { isGuest: boolean }) {
           className={cn("h-8 w-8", collapsed && "mx-auto")}
           onClick={() => setCollapsed(!collapsed)}
         >
-          {collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+          {collapsed ? (
+            <ChevronRight className="h-4 w-4" />
+          ) : (
+            <ChevronLeft className="h-4 w-4" />
+          )}
         </Button>
       </div>
 
       {/* Navigation */}
       <ScrollArea className="flex-1 px-2 py-4">
         <nav className="flex flex-col gap-1">
-          {sidebarLinks.filter((link) => !isGuest || !["Messages", "Settings"].includes(link.title)).map((link) => {
-            const isActive = pathname === link.href || 
-              (link.href !== "/damstech-admin-portal" && pathname.startsWith(link.href))
-            
-            return (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={cn(
-                  "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors",
-                  isActive
-                    ? "bg-primary text-primary-foreground"
-                    : "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
-                  collapsed && "justify-center px-2"
-                )}
-                title={collapsed ? link.title : undefined}
-              >
-                <link.icon className="h-5 w-5 shrink-0" />
-                {!collapsed && <span>{link.title}</span>}
-              </Link>
+          {sidebarLinks
+            .filter(
+              (link) =>
+                !isGuest || !["Messages", "Settings"].includes(link.title),
             )
-          })}
+            .map((link) => {
+              const isActive =
+                pathname === link.href ||
+                (link.href !== "/admin" && pathname.startsWith(link.href));
+
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={cn(
+                    "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors",
+                    isActive
+                      ? "bg-primary text-primary-foreground"
+                      : "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
+                    collapsed && "justify-center px-2",
+                  )}
+                  title={collapsed ? link.title : undefined}
+                >
+                  <link.icon className="h-5 w-5 shrink-0" />
+                  {!collapsed && <span>{link.title}</span>}
+                </Link>
+              );
+            })}
         </nav>
       </ScrollArea>
 
@@ -141,7 +151,7 @@ export function AdminSidebar({ isGuest }: { isGuest: boolean }) {
           variant="ghost"
           className={cn(
             "w-full justify-start gap-3 text-muted-foreground hover:bg-destructive/10 hover:text-destructive",
-            collapsed && "justify-center px-2"
+            collapsed && "justify-center px-2",
           )}
           onClick={handleLogout}
           title={collapsed ? "Logout" : undefined}
@@ -151,5 +161,5 @@ export function AdminSidebar({ isGuest }: { isGuest: boolean }) {
         </Button>
       </div>
     </div>
-  )
+  );
 }
