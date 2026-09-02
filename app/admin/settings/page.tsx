@@ -1,12 +1,18 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { AdminShell } from "@/components/admin/admin-shell"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { AdminShell } from "@/components/admin/admin-shell";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -15,10 +21,10 @@ import {
   FormLabel,
   FormMessage,
   FormDescription,
-} from "@/components/ui/form"
-import { Skeleton } from "@/components/ui/skeleton"
-import { Badge } from "@/components/ui/badge"
-import { Separator } from "@/components/ui/separator"
+} from "@/components/ui/form";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
 import {
   Loader2,
   Settings,
@@ -28,24 +34,27 @@ import {
   Calendar,
   ExternalLink,
   CheckCircle2,
-} from "lucide-react"
-import { passwordChangeSchema, type PasswordChangeInput } from "@/lib/validations"
-import { toast } from "sonner"
-import { format } from "date-fns"
-import Link from "next/link"
+} from "lucide-react";
+import {
+  passwordChangeSchema,
+  type PasswordChangeInput,
+} from "@/lib/validations";
+import { toast } from "sonner";
+import { format } from "date-fns";
+import Link from "next/link";
 
 interface AdminInfo {
-  _id: string
-  username: string
-  email: string
-  createdAt: string
+  _id: string;
+  username: string;
+  email: string;
+  createdAt: string;
 }
 
 export default function SettingsPage() {
-  const [adminInfo, setAdminInfo] = useState<AdminInfo | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [passwordChanged, setPasswordChanged] = useState(false)
+  const [adminInfo, setAdminInfo] = useState<AdminInfo | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [passwordChanged, setPasswordChanged] = useState(false);
 
   const form = useForm<PasswordChangeInput>({
     resolver: zodResolver(passwordChangeSchema),
@@ -54,49 +63,51 @@ export default function SettingsPage() {
       newPassword: "",
       confirmPassword: "",
     },
-  })
+  });
 
   const fetchData = async () => {
     try {
-      const response = await fetch("/api/admin/settings")
-      const data = await response.json()
-      setAdminInfo(data)
+      const response = await fetch("/api/admin/settings");
+      const data = await response.json();
+      setAdminInfo(data);
     } catch (error) {
-      console.error("Failed to fetch admin info:", error)
+      console.error("Failed to fetch admin info:", error);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
-    fetchData()
-  }, [])
+    fetchData();
+  }, []);
 
   const onSubmit = async (data: PasswordChangeInput) => {
-    setIsSubmitting(true)
+    setIsSubmitting(true);
     try {
       const response = await fetch("/api/admin/settings", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
-      })
+      });
 
       if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || "Failed to change password")
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to change password");
       }
 
-      toast.success("Password changed successfully!")
-      form.reset()
-      setPasswordChanged(true)
-      setTimeout(() => setPasswordChanged(false), 5000)
+      toast.success("Password changed successfully!");
+      form.reset();
+      setPasswordChanged(true);
+      setTimeout(() => setPasswordChanged(false), 5000);
     } catch (error) {
-      console.error("Error changing password:", error)
-      toast.error(error instanceof Error ? error.message : "Failed to change password")
+      console.error("Error changing password:", error);
+      toast.error(
+        error instanceof Error ? error.message : "Failed to change password",
+      );
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   return (
     <AdminShell title="Settings">
@@ -139,7 +150,9 @@ export default function SettingsPage() {
                         Admin
                       </Badge>
                     </div>
-                    <span className="text-sm text-muted-foreground">{adminInfo.email}</span>
+                    <span className="text-sm text-muted-foreground">
+                      {adminInfo.email}
+                    </span>
                   </div>
                 </div>
 
@@ -150,13 +163,17 @@ export default function SettingsPage() {
                     <User className="h-5 w-5 text-muted-foreground" />
                     <div>
                       <p className="text-xs text-muted-foreground">Username</p>
-                      <p className="font-medium text-foreground">{adminInfo.username}</p>
+                      <p className="font-medium text-foreground">
+                        {adminInfo.username}
+                      </p>
                     </div>
                   </div>
                   <div className="flex items-center gap-3 rounded-lg border border-border/50 bg-muted/30 p-3">
                     <Calendar className="h-5 w-5 text-muted-foreground" />
                     <div>
-                      <p className="text-xs text-muted-foreground">Member Since</p>
+                      <p className="text-xs text-muted-foreground">
+                        Member Since
+                      </p>
                       <p className="font-medium text-foreground">
                         {adminInfo.createdAt
                           ? format(new Date(adminInfo.createdAt), "MMM d, yyyy")
@@ -167,7 +184,9 @@ export default function SettingsPage() {
                 </div>
               </div>
             ) : (
-              <p className="text-muted-foreground">Unable to load admin information</p>
+              <p className="text-muted-foreground">
+                Unable to load admin information
+              </p>
             )}
           </CardContent>
         </Card>
@@ -187,12 +206,17 @@ export default function SettingsPage() {
             {passwordChanged && (
               <div className="mb-4 flex items-center gap-2 rounded-lg border border-green-500/50 bg-green-500/10 p-3 text-green-600 dark:text-green-400">
                 <CheckCircle2 className="h-5 w-5" />
-                <span className="text-sm font-medium">Password changed successfully!</span>
+                <span className="text-sm font-medium">
+                  Password changed successfully!
+                </span>
               </div>
             )}
 
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="flex flex-col gap-4"
+              >
                 <FormField
                   control={form.control}
                   name="currentPassword"
@@ -277,24 +301,26 @@ export default function SettingsPage() {
               <Settings className="h-5 w-5" />
               Quick Links
             </CardTitle>
-            <CardDescription>
-              Navigate to other admin sections
-            </CardDescription>
+            <CardDescription>Navigate to other admin sections</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="grid gap-3 sm:grid-cols-2">
               <Link
-                href="/damstech-admin-portal/about"
+                href="/admin/about"
                 className="flex items-center justify-between rounded-lg border border-border/50 bg-muted/30 p-3 transition-colors hover:bg-muted/50"
               >
-                <span className="font-medium text-foreground">Edit Profile Info</span>
+                <span className="font-medium text-foreground">
+                  Edit Profile Info
+                </span>
                 <ExternalLink className="h-4 w-4 text-muted-foreground" />
               </Link>
               <Link
-                href="/damstech-admin-portal/social-links"
+                href="/admin/social-links"
                 className="flex items-center justify-between rounded-lg border border-border/50 bg-muted/30 p-3 transition-colors hover:bg-muted/50"
               >
-                <span className="font-medium text-foreground">Social Links</span>
+                <span className="font-medium text-foreground">
+                  Social Links
+                </span>
                 <ExternalLink className="h-4 w-4 text-muted-foreground" />
               </Link>
               <Link
@@ -302,11 +328,13 @@ export default function SettingsPage() {
                 target="_blank"
                 className="flex items-center justify-between rounded-lg border border-border/50 bg-muted/30 p-3 transition-colors hover:bg-muted/50"
               >
-                <span className="font-medium text-foreground">View Portfolio</span>
+                <span className="font-medium text-foreground">
+                  View Portfolio
+                </span>
                 <ExternalLink className="h-4 w-4 text-muted-foreground" />
               </Link>
               <Link
-                href="/damstech-admin-portal"
+                href="/admin"
                 className="flex items-center justify-between rounded-lg border border-border/50 bg-muted/30 p-3 transition-colors hover:bg-muted/50"
               >
                 <span className="font-medium text-foreground">Dashboard</span>
@@ -317,5 +345,5 @@ export default function SettingsPage() {
         </Card>
       </div>
     </AdminShell>
-  )
+  );
 }
