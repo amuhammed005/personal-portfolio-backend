@@ -31,7 +31,7 @@ export const skillLevel = [
 export const socialLinks = [
   {
     name: "GitHub",
-    url: "https://github.com/damstech",
+    url: "https://github.com/amuhammed005",
     icon: "github",
   },
   {
